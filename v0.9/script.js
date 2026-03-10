@@ -61,6 +61,30 @@ function loadSong(play = true) {
   }
 }
 
+function nextSong() {
+
+  currentSong++;
+
+  if (currentSong >= songs.length) {
+    currentSong = 0;
+  }
+
+  loadSong();
+
+}
+
+function prevSong() {
+
+  currentSong--;
+
+  if (currentSong < 0) {
+    currentSong = songs.length - 1;
+  }
+
+  loadSong();
+
+}
+
 //func togglePlay
 function togglePlay() {
 
@@ -84,6 +108,10 @@ pauseBtn.addEventListener("click", function() {
 });
 */
 
+nextBtn.addEventListener("click", nextSong);
+
+prevBtn.addEventListener("click", prevSong);
+/*
 //next song btn 
 nextBtn.addEventListener("click", function nextSong() {
   currentSong++;
@@ -102,15 +130,11 @@ prevBtn.addEventListener("click", function prevSong() {
   }
   loadSong();
 });
+*/
 
 //when song end 
-player.addEventListener("ended", function() {
-  currentSong++;
-  if (currentSong >= songs.length) {
-    currentSong = 0;
-  }
-  loadSong();
-});
+player.addEventListener("ended", nextSong);
+
 
 player.addEventListener("loadedmetadata", function () {
   durationDisplay.textContent = formatTime(player.duration);
@@ -154,16 +178,16 @@ loadSong(false);
 document.addEventListener("keydown", function(event) {
 
   if (event.code === "Space") {
-  event.preventDefault();
-  togglePlay();
+    event.preventDefault();
+    togglePlay();
   }
 
   if (event.code === "ArrowRight") {
-    nextBtn.click();
+    nextSong();
   }
 
   if (event.code === "ArrowLeft") {
-    prevBtn.click();
+    prevSong();
   }
 
 });
