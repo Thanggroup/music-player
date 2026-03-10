@@ -2,3 +2,9 @@
   font-weight: bold;
   color: green;
 }
+
+/* the play button when it has the class "playing" */
+#playBtn.playing {
+  background-color: #4CAF50;
+  color: white;
+}

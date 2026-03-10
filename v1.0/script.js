@@ -140,10 +140,12 @@ progressBar.addEventListener("input", function () {
 //play and pause icon
 player.addEventListener("play", function () {
   playBtn.textContent = "⏸";
+  playBtn.classList.add("playing");
 });
 
 player.addEventListener("pause", function () {
   playBtn.textContent = "▶";
+  playBtn.classList.remove("playing");
 });
 
 loadSong(false);
