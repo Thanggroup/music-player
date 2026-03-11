@@ -38,6 +38,9 @@ let repeatMode = 0;
 
 let shuffleMode = false;
 
+let shuffleOrder = [];
+let shuffleIndex = 0;
+
 let recentSongs = [];
 
 function loadSong(play = true) {
@@ -57,7 +60,22 @@ function loadSong(play = true) {
   }
 }
 
-let shuffleBag = [];
+function generateShuffleOrder() {
+
+  shuffleOrder = songs.map((_, i) => i);
+
+  for (let i = shuffleOrder.length - 1; i > 0; i--) {
+
+    const j = Math.floor(Math.random() * (i + 1));
+
+    [shuffleOrder[i], shuffleOrder[j]] =
+      [shuffleOrder[j], shuffleOrder[i]];
+
+  }
+
+  shuffleIndex = 0;
+
+}
 
 function getNextSong() {
 
@@ -65,13 +83,16 @@ function getNextSong() {
     return (currentSong + 1) % songs.length;
   }
 
-  if (shuffleBag.length === 0) {
-    shuffleBag = [...Array(songs.length).keys()];
+  shuffleIndex++;
 
-    shuffleBag.sort(() => Math.random() - 0.5);
+  if (shuffleIndex >= shuffleOrder.length) {
+
+    generateShuffleOrder();
+
   }
 
-  return shuffleBag.pop();
+  return shuffleOrder[shuffleIndex];
+
 }
 
 function nextSong() {
@@ -81,10 +102,22 @@ function nextSong() {
 
 function getPrevSong() {
 
-  if (!shuffleMode && currentSong < 0) {
-    return (currentSong - 1) % songs.length;
+  if (!shuffleMode) {
+
+    return (currentSong - 1 + songs.length) % songs.length;
+
   }
-  return shuffleBag.shift();
+
+  shuffleIndex--;
+
+  if (shuffleIndex < 0) {
+
+    shuffleIndex = shuffleOrder.length - 1;
+
+  }
+
+  return shuffleOrder[shuffleIndex];
+
 }
 
 function prevSong() {
