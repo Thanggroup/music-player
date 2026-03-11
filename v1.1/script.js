@@ -55,9 +55,9 @@ function loadSong(play = true) {
   }
 }
 
-function nextSong() {
+function getNextSong() {
 
-  if (shuffleMode) {
+  if (shuffleMode && songs.length > 1) {
 
     let randomSong;
 
@@ -65,18 +65,15 @@ function nextSong() {
       randomSong = Math.floor(Math.random() * songs.length);
     } while (randomSong === currentSong);
 
-    currentSong = randomSong;
-
-  } else {
-
-    currentSong++;
-
-    if (currentSong >= songs.length) {
-      currentSong = 0;
-    }
+    return randomSong;
 
   }
 
+  return (currentSong + 1) % songs.length;
+}
+
+function nextSong() {
+  currentSong = getNextSong();
   loadSong();
 }
 
