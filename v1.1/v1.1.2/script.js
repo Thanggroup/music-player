@@ -57,29 +57,21 @@ function loadSong(play = true) {
   }
 }
 
+let shuffleBag = [];
+
 function getNextSong() {
 
-if (shuffleMode && songs.length > 1) {
-
-  let randomSong;
-
-  do {
-    randomSong = Math.floor(Math.random() * songs.length);
-  } while (
-    randomSong === currentSong ||
-    recentSongs.includes(randomSong)
-  );
-
-  recentSongs.push(randomSong);
-
-  if (recentSongs.length >= songs.length - 1) {
-    recentSongs = [];
+  if (!shuffleMode) {
+    return (currentSong + 1) % songs.length;
   }
 
-  currentSong = randomSong;
+  if (shuffleBag.length === 0) {
+    shuffleBag = [...Array(songs.length).keys()];
 
-}
-  return (currentSong + 1) % songs.length;
+    shuffleBag.sort(() => Math.random() - 0.5);
+  }
+
+  return shuffleBag.pop();
 }
 
 function nextSong() {
