@@ -79,13 +79,17 @@ function nextSong() {
   loadSong();
 }
 
+function getPrevSong() {
+
+  if (!shuffleMode && currentSong < 0) {
+    return (currentSong - 1) % songs.length;
+  }
+  return shuffleBag.shift();
+}
+
 function prevSong() {
 
-  currentSong--;
-
-  if (currentSong < 0) {
-    currentSong = songs.length - 1;
-  }
+  currentSong = getPrevSong();
 
   loadSong();
 
