@@ -34,7 +34,7 @@ let playlistItems = [];
 
 let currentSong = 0;
 
-let repeatMode = 0;
+let repeatMode = false;
 
 let shuffleMode = false;
 
@@ -42,6 +42,9 @@ let shuffleOrder = [];
 let shuffleIndex = 0;
 
 let recentSongs = [];
+
+let savedTime = 0;
+let timeRestored = false;
 
 function loadSong(play = true) {
 
@@ -55,7 +58,7 @@ function loadSong(play = true) {
 
   playlistItems[currentSong].classList.add("active");
 
-  if (play) {
+  if (autoPlay) {
     player.play();
   }
 }
@@ -164,13 +167,19 @@ function updateRepeatButton() {
 function savePlayerState() {
 
   const state = {
+
     song: currentSong,
     time: player.currentTime,
     volume: player.volume,
-    shuffle: shuffleMode
+    shuffle: shuffleMode,
+    repeat: repeatMode
+
   };
 
-  localStorage.setItem("musicPlayerState", JSON.stringify(state));
+  localStorage.setItem(
+    "musicPlayerState",
+    JSON.stringify(state)
+  );
 
 }
 
@@ -182,17 +191,13 @@ function loadPlayerState() {
 
   const state = JSON.parse(saved);
 
-  currentSong = state.song || 0;
+  currentSong = state.song ?? 0;
+  savedTime = state.time ?? 0;
+
   player.volume = state.volume ?? 1;
-  shuffleMode = state.shuffle || false;
 
-  loadSong(false);
-
-  player.addEventListener("loadedmetadata", function () {
-
-    player.currentTime = state.time || 0;
-
-  });
+  shuffleMode = state.shuffle ?? false;
+  repeatMode = state.repeat ?? false;
 
 }
 
@@ -225,7 +230,10 @@ player.addEventListener("ended", function () {
 });
 
 player.addEventListener("loadedmetadata", function () {
-  durationDisplay.textContent = formatTime(player.duration);
+  if (!timeRestored) {
+    player.currentTime = savedTime || 0;
+    timeRestored = true;
+  }
 });
 
 //Playlist 
@@ -251,6 +259,7 @@ player.addEventListener("timeupdate", function () {
   currentTimeDisplay.textContent = formatTime(player.currentTime);
   durationDisplay.textContent = formatTime(player.duration);
 
+  savePlayerState();
 });
 
 //user drag song slider bar to play
@@ -311,6 +320,7 @@ repeatBtn.addEventListener("click", function () {
 
   updateRepeatButton();
 
+  savePlayerState();
 });
 
 //shuffle btn
@@ -325,8 +335,7 @@ shuffleBtn.addEventListener("click", function () {
     shuffleBtn.textContent = "Shuffle: Off";
   }
 
+  savePlayerState();
 });
 
 loadPlayerState();
-
-player.addEventListener("timeupdate", savePlayerState);
