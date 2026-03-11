@@ -64,6 +64,8 @@ function createShuffle() {
 
   shuffleOrder = songs.map((_, i) => i);
 
+  shuffleOrder = shuffleOrder.filter(i => i !== currentSong);
+
   for (let i = shuffleOrder.length - 1; i > 0; i--) {
 
     const j = Math.floor(Math.random() * (i + 1));
@@ -72,6 +74,10 @@ function createShuffle() {
     [shuffleOrder[j], shuffleOrder[i]];
 
   }
+
+  shuffleOrder.unshift(currentSong);
+
+  shuffleIndex = 0;
 
 }
 
@@ -279,6 +285,7 @@ shuffleBtn.addEventListener("click", function () {
 
   if (shuffleMode) {
     shuffleBtn.textContent = "Shuffle: On 🔀";
+    createShuffle();
   } else {
     shuffleBtn.textContent = "Shuffle: Off";
   }
