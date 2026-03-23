@@ -1,3 +1,4 @@
+//Setup Layer
 const player = document.getElementById("player");
 const playBtn = document.getElementById("playBtn");
 const nextBtn = document.getElementById("nextBtn");
@@ -40,6 +41,13 @@ let shuffleMode = false;
 let shuffleOrder = [];
 let shuffleIndex = 0;
 
+let playerState = {
+  currentIndex: 0,
+  currentTime: 0,
+  volume: 1
+};
+
+//Logic Layer (Core Functionality)
 function loadSong(play = true) {
 
   player.src = songs[currentSong].file;
@@ -158,6 +166,34 @@ function updateRepeatButton() {
 
 }
 
+function saveState() {
+  playerState.currentIndex = currentSong;
+  playerState.currentTime = player.currentTime;
+  playerState.volume = player.volume;
+  playerState.repeatMode = repeatMode;
+  localStorage.setItem("playerState", JSON.stringify(playerState));
+}
+
+function loadState() {
+  const saved = localStorage.getItem("playerState");
+
+  if (saved) {
+    playerState = JSON.parse(saved);
+
+    currentSong = playerState.currentIndex;
+
+    volumeSlider.value = playerState.volume;
+    player.volume = playerState.volume;
+    repeatMode = playerState.repeatMode ?? 0;
+  }
+}
+
+function applyState() {
+  updateRepeatButton();
+  // later: shuffle, volume UI, etc.
+}
+
+//Event Layer (User Interaction)
 playBtn.addEventListener("click", togglePlay);
 
 nextBtn.addEventListener("click", nextSong);
@@ -188,6 +224,13 @@ player.addEventListener("ended", function () {
 
 player.addEventListener("loadedmetadata", function () {
   durationDisplay.textContent = formatTime(player.duration);
+
+  // Only restore time if loading the SAME song
+    if (currentSong === playerState.currentIndex) {
+    player.currentTime = playerState.currentTime || 0;
+  } else {
+    player.currentTime = 0;  // Reset to start if different song
+  }
 });
 
 //Playlist 
@@ -213,6 +256,7 @@ player.addEventListener("timeupdate", function () {
   currentTimeDisplay.textContent = formatTime(player.currentTime);
   durationDisplay.textContent = formatTime(player.duration);
 
+  saveState();
 });
 
 //user drag song slider bar to play
@@ -234,8 +278,6 @@ player.addEventListener("pause", function () {
   playBtn.textContent = "▶";
   playBtn.classList.remove("playing");
 });
-
-loadSong(false);
 
 //use arrow key to change song
 document.addEventListener("keydown", function(event) {
@@ -259,6 +301,8 @@ document.addEventListener("keydown", function(event) {
 volumeSlider.addEventListener("input", function () {
 
   player.volume = volumeSlider.value;
+
+  saveState();
 
 });
 
@@ -288,3 +332,8 @@ shuffleBtn.addEventListener("click", function () {
   }
 
 });
+
+//Initialization Layer (Setup Initial State)
+loadState();
+applyState();
+loadSong(false);
