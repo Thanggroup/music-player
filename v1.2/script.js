@@ -1,6 +1,5 @@
 const player = document.getElementById("player");
 const playBtn = document.getElementById("playBtn");
-const pauseBtn = document.getElementById("pauseBtn");
 const nextBtn = document.getElementById("nextBtn");
 const prevBtn = document.getElementById("prevBtn");
 const songTitle = document.getElementById("songTitle");
@@ -40,8 +39,6 @@ let shuffleMode = false;
 
 let shuffleOrder = [];
 let shuffleIndex = 0;
-
-let recentSongs = [];
 
 function loadSong(play = true) {
 
