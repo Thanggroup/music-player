@@ -40,6 +40,13 @@ let recentSongs = [];
 let savedTime = 0;
 let timeRestored = false;
 
+//player state for local storage
+let playerState = {
+  currentIndex: 0,
+  currentTime: 0,
+  volume: 1
+};
+
 function loadSong(play = true) {
   player.src = songs[currentSong].file;
   player.load();
@@ -123,29 +130,17 @@ function updateRepeatButton() {
   }
 }
 
-function savePlayerState() {
-  const state = {
-    song: currentSong,
-    time: player.currentTime,
-    volume: player.volume,
-    shuffle: shuffleMode,
-    repeat: repeatMode
-  };
-  localStorage.setItem(
-    "musicPlayerState",
-    JSON.stringify(state)
-  );
+//local storage
+function loadState() {
+  const saved = localStorage.getItem("playerState");
+
+  if (saved) {
+    playerState = JSON.parse(saved);
+  }
 }
 
-function loadPlayerState() {
-  const saved = localStorage.getItem("musicPlayerState");
-  if (!saved) return;
-  const state = JSON.parse(saved);
-  currentSong = state.song ?? 0;
-  savedTime = state.time ?? 0;
-  player.volume = state.volume ?? 1;
-  shuffleMode = state.shuffle ?? false;
-  repeatMode = state.repeat ?? false;
+function saveState() {
+  localStorage.setItem("playerState", JSON.stringify(playerState));
 }
 
 playBtn.addEventListener("click", togglePlay);
@@ -243,7 +238,6 @@ repeatBtn.addEventListener("click", function () {
     repeatMode = 0;
   }
   updateRepeatButton();
-  savePlayerState();
 });
 
 //shuffle btn
@@ -257,4 +251,5 @@ shuffleBtn.addEventListener("click", function () {
   }
   savePlayerState();
 });
-loadPlayerState();
+loadState();
+loadSong(playerState.currentIndex);
