@@ -41,6 +41,8 @@ let shuffleMode = false;
 let shuffleOrder = [];
 let shuffleIndex = 0;
 
+let isRepeating = false;
+
 let playerState = {
   currentIndex: 0,
   currentTime: 0,
@@ -203,6 +205,7 @@ prevBtn.addEventListener("click", prevSong);
 player.addEventListener("ended", function () {
 
   if (repeatMode === 2) {
+    isRepeating = true;
     loadSong();
     return;
   }
@@ -224,6 +227,12 @@ player.addEventListener("ended", function () {
 
 player.addEventListener("loadedmetadata", function () {
   durationDisplay.textContent = formatTime(player.duration);
+
+    if (isRepeating) {
+    player.currentTime = 0; // force restart
+    isRepeating = false;
+    return;
+  }
 
   // Only restore time if loading the SAME song
     if (currentSong === playerState.currentIndex) {
