@@ -137,6 +137,7 @@ function getNextSong() {
 }
 
 function nextSong() {
+  if (isBusy()) return;
   currentSong = getNextSong();
   loadSong();
 }
@@ -158,12 +159,13 @@ function getPrevSong() {
 }
 
 function prevSong() {
+  if (isBusy()) return;
   currentSong = getPrevSong();
   loadSong();
-
 }
 
 function togglePlay() {
+  if (isBusy()) return;
 
   if (player.paused) {
     player.play();
@@ -269,6 +271,7 @@ function handleVolumeChange() {
 }
 
 function handleRepeatToggle() {
+  if (isBusy()) return;
 
   repeatMode++;
 
@@ -279,6 +282,7 @@ function handleRepeatToggle() {
 }
 
 function handlePlaylistClick(index) {
+  if (isBusy()) return;
   currentSong = index;
   loadSong();
 }
@@ -299,6 +303,7 @@ function renderPlaylist() {
 }
 
 function handleShuffleToggle() {
+  if (isBusy()) return;
   shuffleMode = !shuffleMode;
 
   updateShuffleUI();
@@ -489,6 +494,9 @@ async function requestDeviceSongs() {
   }
 }
 
+function isBusy() {
+  return isLoading;
+}
 
 //Event Layer (User Interaction)
 playBtn.addEventListener("click", togglePlay);
