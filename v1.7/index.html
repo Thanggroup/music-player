@@ -37,10 +37,10 @@
   <h2>Playlist</h2>
   <ul id="playlist"></ul>
 
-<button id="testAndroidBtn" style="margin: 10px; padding: 8px; background: #ff9800; color: white; border: none; cursor: pointer;">
-  📱 Test Android Load
-</button>
-
+  <button id="testAndroidBtn" style="margin: 10px; padding: 8px; background: #ff9800; color: white; border: none; cursor: pointer;">
+    📱 Test Android Load
+  </button>
+  <div id="loadingStatus"></div>
 <script>
   document.getElementById("testAndroidBtn").addEventListener("click", () => {
     loadDeviceSongs(mockDeviceSongs);

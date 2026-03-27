@@ -430,6 +430,7 @@ function setPlaylist(newSongs) {
   // 6. UI + play
   renderPlaylist();
   loadSong(true);
+  applyState();
 }
 
 function loadLocalSongs(files) {
@@ -454,6 +455,13 @@ function loadDeviceSongs(deviceSongs) {
   setPlaylist(newSongs);
 }
 
+function updateLoadingUI() {
+  const loadingStatus = document.getElementById("loadingStatus");
+  if (!loadingStatus) return; // prevent crash
+
+  loadingStatus.textContent = isLoading ? "Loading songs..." : "";
+}
+
 async function requestDeviceSongs() {
   if (isLoading) {
     console.warn("Already loading device songs");
@@ -461,6 +469,7 @@ async function requestDeviceSongs() {
   }
 
   isLoading = true;
+  updateLoadingUI();
 
   try {
     // Step 1: Simulate permission request
@@ -491,6 +500,7 @@ async function requestDeviceSongs() {
     console.error("Failed to load device songs:", error);
   } finally {
     isLoading = false;
+    updateLoadingUI();
   }
 }
 
