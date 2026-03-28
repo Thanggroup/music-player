@@ -173,6 +173,7 @@ function togglePlay() {
     player.pause();
   }
 
+  saveState();
 }
 
 function processSongEnd() {
@@ -279,6 +280,8 @@ function handleRepeatToggle() {
     repeatMode = 0;
   }
   updateRepeatButton();
+
+  saveState();
 }
 
 function handlePlaylistClick(index) {
@@ -311,6 +314,7 @@ function handleShuffleToggle() {
   if (shuffleMode && shuffleOrder.length === 0) {
     createShuffle();
   }
+  saveState();
 }
 
 function updateShuffleUI() {
