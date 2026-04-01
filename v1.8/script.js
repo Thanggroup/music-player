@@ -33,26 +33,20 @@ let songs = [{
 
 // MOCK: Android-style device storage
 const mockDeviceSongs = [
-  {
-    title: "Capsule Mix Speakers Inc",
-    artist: "Unknown",
-    uri: "../assets/Capsule-MixSpeakersInc-4750976.mp3"
-  },
-  {
-    title: "Fucking Bullshit",
-    artist: "Unknown",
-    uri: "../assets/Fucking_Bullshit.mp3"
-  },
-  {
-    title: "Get on Up Tyrone Briggs",
-    artist: "Unknown",
-    uri: "../assets/Get+on+Up_Tyrone+Briggs_1543070911.mp3"
-  },
-  {
-    title: "Kobe Mane VIOLENTO",
-    artist: "Kobe Mane",
-    uri: "../assets/Kobe Mane - VIOLENTO.mp3"
-  }
+  // normal
+  { title: "Song A", file: "music/songA.mp3" },
+
+  // missing title → should use filename
+  { title: null, file: "music/songB.mp3" },
+
+  // empty title → should use filename
+  { title: "   ", file: "music/songC.mp3" },
+
+  // missing file → should NOT crash
+  { title: "No File Song", file: null },
+
+  // everything broken
+  { title: "", file: null }
 ];
 
 let playlistItems = [];
@@ -499,14 +493,14 @@ function loadLocalSongs(files) {
 }
 
 function loadDeviceSongs(deviceSongs) {
-  const newSongs = deviceSongs.map(song =>
-    createSongObject({
-      title: song.title,
-      file: song.uri  // Maps Android uri → player file
+  const adaptedSongs = adaptDeviceSongs(deviceSongs);
+
+  setPlaylist(
+    adaptedSongs.map(function(song) {
+      return createSongObject(song);
     })
   );
-
-  setPlaylist(newSongs);
+    console.log(adaptDeviceSongs(deviceSongs));
 }
 
 function updateLoadingUI() {
@@ -562,6 +556,31 @@ function isBusy() {
   return isLoading;
 }
 
+function adaptDeviceSongs(deviceSongs) {
+  return deviceSongs.map(function(song) {
+    let title = song.title;
+
+    if (!title || !title.trim()) {
+      if (song.file) {
+        const filename = song.file.split('/').pop();
+        if (filename) {
+          title = filename.replace(/\.[^/.]+$/, "");
+        }
+      }
+
+      if (!title || !title.trim()) {
+        title = "Unknown Title";
+      }
+    }
+
+    return {
+      title: title,
+      file: song.file || null,
+      original: song
+    };
+  });
+}
+
 //Event Layer (User Interaction)
 playBtn.addEventListener("click", togglePlay);
 nextBtn.addEventListener("click", nextSong);
@@ -585,6 +604,5 @@ fileInput.addEventListener("change", handleFileUpload);
 //Initialization Layer (Setup Initial State)
 renderPlaylist();
 loadState();
-restoreLocalSongs();
 applyState();
 loadSong(false);
