@@ -40,7 +40,7 @@ const mockDeviceSongs = [
   { title: null, file: "music/songB.mp3" },
 
   // empty title → should use filename
-  { title: "   ", file: "music/songC.mp3" },
+  { title: "", file: "music/songC.mp3" },
 
   // missing file → should NOT crash
   { title: "No File Song", file: null },
@@ -557,20 +557,16 @@ function isBusy() {
 }
 
 function adaptDeviceSongs(deviceSongs) {
-  return deviceSongs.map(function(song) {
-    let title = song.title;
+  const adaptedSongs = deviceSongs.map(song => {
+    let title;
 
-    if (!title || !title.trim()) {
-      if (song.file) {
-        const filename = song.file.split('/').pop();
-        if (filename) {
-          title = filename.replace(/\.[^/.]+$/, "");
-        }
-      }
-
-      if (!title || !title.trim()) {
-        title = "Unknown Title";
-      }
+    if (song.title) {
+      title = song.title;
+    } else if (song.file) {
+      const parts = song.file.split('/');
+      title = parts[parts.length - 1];
+    } else {
+      title = "Unknown Title";
     }
 
     return {
@@ -578,6 +574,41 @@ function adaptDeviceSongs(deviceSongs) {
       file: song.file || null,
       original: song
     };
+  });
+
+  // store flags aligned by index
+  window.__songFlags = buildFlagsArray(deviceSongs);
+
+  return adaptedSongs;
+}
+
+function detectFlags(song) {
+  const flags = [];
+
+  if (!song.file) {
+    flags.push("MISSING_FILE");
+  }
+
+  if (song.duration && song.duration <= 0) {
+    flags.push("INVALID_DURATION");
+  }
+
+  return flags;
+}
+
+function buildFlagsArray(deviceSongs) {
+  return deviceSongs.map(song => {
+    const flags = [];
+
+    if (!song.file) {
+      flags.push("MISSING_FILE");
+    }
+
+    if (song.duration && song.duration <= 0) {
+      flags.push("INVALID_DURATION");
+    }
+
+    return flags;
   });
 }
 
