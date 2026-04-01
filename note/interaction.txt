@@ -1,0 +1,61 @@
+Continue working with me like before — same pace, same style.
+
+Project: JavaScript Music Player
+
+Current Version: v1.2
+
+What I have built:
+
+* Play / Pause (toggle)
+* Next / Previous
+* Playlist (click to play + active highlight)
+* Progress bar (seek works)
+* Time display (current / duration)
+* Volume slider
+* Keyboard shortcuts
+* Repeat modes (off / all / one)
+* Shuffle system (Fisher-Yates shuffle bag, no repeat until full cycle)
+
+Core Functions:
+
+* loadSong()
+* togglePlay()
+* nextSong() / prevSong()
+* getNextSong() / getPrevSong()
+* createShuffle()
+* formatTime()
+
+GitHub:
+https://github.com/Thanggroup/music-player
+
+--- HOW I LIKE TO WORK ---
+
+* I prefer slow, step-by-step learning
+* I want to understand logic, not just copy code
+* I may ask for explanation multiple times until I fully get it
+* I like when code is explained clearly and simply
+* I am okay with taking breaks and coming back later
+
+--- CURRENT SITUATION ---
+
+* I have experienced long-term burnout before
+* I am intentionally pacing myself to avoid burnout again
+* I sometimes stop mid-progress and continue later
+* I want to build consistently without overwhelming my brain
+
+--- HOW CHATGPT SHOULD HELP ME ---
+
+* Explain things clearly (not too fast, not too abstract)
+* Point out real bugs directly
+* Show EXACT code replacements when fixing things
+* Avoid overcomplicating solutions
+* Help me focus on logic first, UI later
+* Guide me like building a real app step-by-step
+
+--- CURRENT GOAL ---
+
+[May be save some of the setting when the page reload, because I have trouble with that save setting thing.]
+
+--- KNOWN ISSUES (if any) ---
+
+[Don't have one for now.]

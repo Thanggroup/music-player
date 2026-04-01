@@ -1,0 +1,91 @@
+this is an example of how I work with you, this is when we tried to add feature save songs on reload, so mode 1 and 2 combine and you give me the prompt 
+You are analyzing a JavaScript music player codebase.
+below is the prompt:
+
+IMPORTANT RULES:
+
+* Do NOT modify code
+* Do NOT suggest fixes
+* Do NOT add new logic
+* Do NOT assume missing features
+* Only describe what already exists in the code
+
+Goal:
+Understand how uploaded songs are currently handled and why they are not persisted after reload.
+
+Tasks:
+
+1. How are uploaded files handled?
+
+   * Where does `<input type="file">` data go?
+   * What function processes the files?
+
+2. How are songs stored in memory?
+
+   * What does each song object contain? (fields like title, src, file, etc.)
+
+3. What happens after files are uploaded?
+
+   * Which functions are called (step-by-step)?
+
+4. What does saveState() currently store?
+
+   * Does it include song list or only playback state?
+
+5. On page reload:
+
+   * How is state restored?
+   * Is there any logic that restores uploaded songs?
+
+6. Identify the exact reason why uploaded songs are lost after reload
+
+Output format:
+
+* Clear bullet points
+* Step-by-step flows where needed
+* No suggestions, only facts from code
+
+then we went to mode 3, because you already understand how my code work so you give me prompt for mode 3.
+
+below is the prompt:
+You are analyzing a JavaScript music player.
+
+IMPORTANT RULES:
+
+* Do NOT edit any files
+* Do NOT apply changes
+* Do NOT assume you can modify code
+* Only OUTPUT a proposed patch as text
+
+Goal:
+Show how to persist uploaded songs across reload (web test only).
+
+Requirements:
+
+1. Show the EXACT code changes needed to:
+
+   * Convert uploaded files to Base64
+   * Store them in localStorage ("localSongs")
+   * Restore them on page load (Base64 → Blob → object URL)
+
+2. Keep changes minimal:
+
+   * Only touch file upload logic
+   * Only add initialization logic
+   * Do NOT modify core functions (setPlaylist, loadSong, etc.)
+
+3. Output format:
+
+* Clearly label sections:
+
+  * "MODIFIED FUNCTION:"
+  * "NEW FUNCTION:"
+  * "INITIALIZATION ADDITION:"
+* Show code only
+* Do NOT execute anything
+
+4. This is a preview only. No real edits.
+
+If unsure about any part of the code, say "unknown" instead of guessing.
+
+lastly you trim + fix + protect my architecture

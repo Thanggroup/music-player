@@ -1,0 +1,367 @@
+Continue working with me like before — same pace, same strict workflow.
+
+Project: JavaScript Music Player
+Current Version: v1.8 → Adapter Integration (Device Source Compatibility Layer)
+
+---
+
+## 🧠 HOW I WORK (STRICT SYSTEM — FOLLOW EXACTLY)
+
+I use a controlled prompt system with 3 modes.
+You MUST respect these modes. Do NOT skip, mix, or jump ahead.
+
+---
+
+## 🟦🟨 MODE 1 + 2 — SCAN + DIAGNOSE (COMBINED)
+
+Purpose:
+
+* Understand real code behavior
+* Identify limitations
+* NO coding yet
+
+STRICT RULES:
+
+* Do NOT modify code
+* Do NOT suggest fixes
+* Do NOT generate code
+* Do NOT assume missing features
+* Only describe what EXISTS in the code
+* If unsure → say "unknown"
+
+OUTPUT:
+
+* Step-by-step data flow
+* Actual function behavior
+* Real limitations (based on code, not assumptions)
+
+---
+
+## 🟥 MODE 3 — PATCH (STRICT VERSION)
+
+THIS IS A PATCH PREVIEW TASK — NOT A CODING TASK.
+
+---
+
+### 🚨 HARD RULES (DO NOT BREAK)
+
+* Do NOT edit any files
+
+* Do NOT apply changes
+
+* Do NOT use tools or editors
+
+* Output TEXT only
+
+* Do NOT rewrite architecture
+
+* Do NOT introduce new patterns
+
+* Do NOT create new files
+
+* Do NOT use import/export
+
+* Do NOT rename existing variables or functions
+
+* Do NOT modify core functions:
+
+  * setPlaylist()
+  * createSongObject()
+  * loadSong()
+
+* Do NOT change existing data model
+
+* Do NOT introduce new required fields
+
+* If something is unclear → output "unknown"
+
+* If requirement cannot be satisfied → output "unknown"
+
+---
+
+### 📦 CURRENT SYSTEM
+
+Song object MUST remain:
+
+{
+title: string,
+file: string | File | null
+}
+
+---
+
+### 🔒 ALLOWED CHANGES (ONLY THESE)
+
+You may ONLY:
+
+1. Add ONE new function (adapter/helper)
+
+2. Modify ONE existing function
+
+3. Add minimal inline logic inside that function
+
+---
+
+### 🚫 FORBIDDEN (COMMON MISTAKES)
+
+Do NOT:
+
+* Add import/export
+* Create new files
+* Spread unknown objects (`...song`)
+* Change function signatures
+* Add global variables
+* Add classes
+* Add async logic unless explicitly required
+* Add UI logic
+* Add validation systems unless explicitly required
+
+---
+
+### 🧩 REQUIRED FLOW (MUST FOLLOW EXACTLY)
+
+Device Songs
+→ (your new function)
+→ createSongObject()
+→ setPlaylist()
+
+If your patch breaks or skips this flow → it is WRONG
+
+---
+
+### 📤 OUTPUT FORMAT (STRICT)
+
+MODIFIED FUNCTION: <ONLY the full function that was changed>
+
+NEW FUNCTION: <ONLY the new function>
+
+INITIALIZATION ADDITION:
+<only if absolutely necessary, otherwise write "None">
+
+---
+
+### ⚠️ FAILURE CONDITIONS
+
+If output includes ANY of these → INVALID:
+
+* import / export
+* multiple modified functions
+* missing createSongObject in flow
+* new data structure replacing existing one
+* unrelated changes
+
+---
+
+### ✅ FINAL CHECK (MODEL MUST SELF-VERIFY)
+
+* Did I change only ONE function?
+* Did I add only ONE new function?
+* Did I keep the existing data model?
+* Did I preserve the pipeline?
+
+If any answer is NO → output "unknown"
+
+---
+
+## 🧩 FINAL STEP (VERY IMPORTANT)
+
+After MODE 3:
+
+* I will paste the patch into ChatGPT
+* ChatGPT MUST:
+
+  * review the patch
+  * remove bugs
+  * trim unnecessary logic
+  * protect architecture
+  * return FINAL SAFE CODE
+
+Do NOT skip this step.
+
+---
+
+# 📦 CURRENT ARCHITECTURE
+
+Flow:
+
+Source → Adapter → createSongObject → setPlaylist → Player
+
+Sources:
+
+1. Local upload (`<input type="file">`)
+2. Mock Android/device data
+
+---
+
+## 🎵 SONG OBJECT (CURRENT)
+
+{
+title: string,
+file: string | File | null
+}
+
+---
+
+## ⚠️ CORE RULES
+
+* setPlaylist() is the ONLY entry point
+* createSongObject() only standardizes structure
+* Core player must remain source-independent
+* No validation inside core
+* Adapter handles messy data
+
+---
+
+# ✅ CURRENT IMPLEMENTATION
+
+Device Adapter (WORKING):
+
+* adaptDeviceSongs(deviceSongs)
+* Title normalization:
+
+  * fallback → filename → "Unknown Title"
+* File handling:
+
+  * missing → null
+* Raw data preserved:
+
+  * original field
+
+Integration:
+
+deviceSongs
+→ adaptDeviceSongs(deviceSongs)
+→ map(createSongObject)
+→ setPlaylist()
+
+---
+
+## 🧪 CURRENT BEHAVIOR
+
+* Titles normalize correctly
+* No crashes from bad data
+* Playlist renders correctly
+* Playback may fail for fake paths (EXPECTED)
+
+---
+
+## 🔒 NOT IMPLEMENTED YET
+
+* No flags system
+* No duplicate detection
+* No playable validation
+* No UI indicators
+
+---
+
+## 🎯 NEXT GOAL
+
+Add "flags layer" (data-level only):
+
+* mark invalid/missing data
+* DO NOT modify UI yet
+* DO NOT break current model
+
+---
+
+## 🧠 HOW YOU SHOULD HELP
+
+* Stay inside the current mode
+* Do NOT jump ahead
+* Do NOT assume code
+* Keep changes minimal
+* Challenge incorrect logic
+* Protect architecture
+
+---
+
+## 🔁 WORKFLOW
+1. I define goal
+2. You generate MODE 1+2 prompt
+3. I run it in other AI
+4. I paste result here
+5. You analyze it
+6. You generate MODE 3 prompt
+7. I run it
+8. I paste patch here
+9. You fix + trim → FINAL CODE
+---
+Follow this exactly.
+
+## 📍 CURRENT STATE
+
+Project: JavaScript Music Player
+Version: v1.8
+
+Status:
+
+* Adapter layer implemented and working
+
+* Device songs now pass through:
+
+  deviceSongs
+  → adaptDeviceSongs()
+  → createSongObject()
+  → setPlaylist()
+
+* Title normalization works
+
+* Missing file handled safely (no crash)
+
+* Core architecture intact
+
+---
+
+## 🎯 CURRENT GOAL (NEXT STEP)
+
+Implement **FLAGS LAYER (data-level only)**
+
+Purpose:
+
+* Mark problematic data WITHOUT changing behavior
+
+---
+
+## ✅ REQUIREMENTS
+
+Extend adapter to attach:
+
+flags: []
+
+Examples:
+
+* "MISSING_FILE" → file is null or missing
+* "INVALID_DURATION" → duration <= 0 (if exists)
+* (Prepare for "DUPLICATE" later)
+
+---
+
+## ⚠️ CONSTRAINTS
+
+* Do NOT modify UI
+* Do NOT change playback behavior
+* Do NOT filter or remove songs
+* Do NOT modify core functions
+* Keep existing data model working
+
+---
+
+## 🎯 RESULT
+
+Each song should carry metadata like:
+
+{
+title: "...",
+file: ...,
+flags: ["MISSING_FILE"]
+}
+
+---
+
+## 📌 POSITION IN SYSTEM
+
+We are at:
+
+Step 2 → Data Awareness Layer
+
+(Adapter = DONE → Flags = NEXT)

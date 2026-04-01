@@ -1,0 +1,82 @@
+flow chart system
+START
+  ↓
+Load file metadata
+  ↓
+Is file path valid?
+  ├── NO → mark MISSING_FILE
+  └── YES → continue
+  ↓
+Process title
+  ↓
+Process artist
+  ↓
+Check duration
+  ├── <= 0 → mark INVALID_DURATION
+  └── OK
+  ↓
+Check duplicates
+  ↓
+Build display model
+  ↓
+Render UI with flags
+END
+
+1. Title Handling
+IF title is null OR empty:
+    IF filename exists:
+        title = filename (without extension)
+    ELSE:
+        title = "Unknown Title"
+
+✔ Musicolet behavior: prefers filename fallback
+✔ Never shows blank titles
+
+2. Artist Handling
+IF artist is null OR "<unknown>" OR empty:
+    artist = "Unknown Artist"
+
+✔ Normalize everything
+✔ Never show raw "<unknown>"
+
+3. Duration Handling
+IF duration <= 0:
+    mark track as INVALID_DURATION
+    allow display = true
+    allow playback = false
+
+UI behavior:
+
+Show duration as "--:--" or "0:00"
+Optional warning icon ⚠️
+
+✔ Musicolet shows but avoids crashes
+
+4. File Path Handling
+IF file_path is null OR file does not exist:
+    mark track as MISSING_FILE
+    allow display = true
+    allow playback = false
+
+UI behavior:
+
+Greyed out item
+Label: “File missing”
+
+✔ Musicolet often lets user manually rescan or remove
+
+5. Duplicate Handling
+DEFINE duplicate_key = (title + artist + duration)
+
+IF another track has same duplicate_key:
+    mark as DUPLICATE
+    allow display = true
+
+UI options:
+
+Default: show all
+Optional setting:
+Group duplicates
+Hide duplicates
+
+✔ Musicolet → shows all, user controls filtering

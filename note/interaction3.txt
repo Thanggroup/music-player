@@ -1,0 +1,108 @@
+Continue working with me like before — same pace, same style.
+Project: JavaScript Music Player
+Current Version: v1.7 (Async + State-Stable + Source-Independent)
+---
+What I have built:
+🎵 Core Player
+* Play / Pause (toggle)
+* Next / Previous
+* Playlist (click to play + active highlight)
+* Progress bar (seek works)
+* Time display (current / duration)
+* Volume slider
+* Keyboard shortcuts (Space, Arrow keys)
+🔁 Playback Logic
+* Repeat modes (off / all / one)
+* Shuffle system (Fisher-Yates shuffle bag, no repeat until full cycle)
+* Next/Prev respects playback state (optional behavior tested)
+📁 Source System (Decoupled)
+* File input (web)
+* Simulated Android data
+* Fully input-agnostic pipeline:
+  Source → Adapter → Core → Player
+🧱 Architecture
+* createSongObject(input) → standardizes all sources
+* setPlaylist(newSongs) → single entry point for data
+* loadSong(play = true) → handles loading + UI
+Structure:
+Event Layer → Handlers → Core → UI
+⚡ Async System (Android Simulation)
+* requestDeviceSongs() (async flow)
+  * simulates permission
+  * simulates fetch delay
+* isLoading state
+* UI lock during loading
+* Loading indicator (updateLoadingUI)
+💾 State System (Major Upgrade)
+* Fully event-driven saving
+* saveState() triggered on:
+  * play / pause
+  * next / prev
+  * shuffle / repeat
+  * volume
+  * timeupdate (throttled)
+* Removed saveState() from loadSong() (prevents overwrite issues)
+⏱️ Time Handling
+* Time restore works correctly
+* Uses proper media lifecycle (loadedmetadata)
+* Known trade-off:
+  * ~1s offset due to throttling (acceptable)
+🧠 Stability Improvements
+* Prevent duplicate async calls (isLoading)
+* Prevent input during loading (UI lock)
+* No listener stacking ({ once: true })
+* Clean state lifecycle:
+  * save = event-driven
+  * restore = media-ready timing
+---
+Current State:
+* App is stable
+* No critical bugs
+* System is source-independent
+* Async-safe + state-safe
+---
+Important Understanding:
+* Player core is fully decoupled from input source
+* Adapter layer is the key to portability
+* State must follow event timing + media lifecycle
+* Saving and restoring are independent systems
+
+---
+What I learned:
+* Async timing vs media lifecycle (loadedmetadata)
+* Event-driven vs time-driven state saving
+* Avoiding state overwrite bugs
+* Debugging via version comparison (v1.6 vs v1.7)
+* Using AI tools as:
+  * Scanner (Windsurf)
+  * Reasoner (ChatGPT)
+---
+Current Goal:
+Prepare for real Android integration
+---
+Next Focus:
+* Strengthen Android simulation (MediaStore-like data)
+* Validate adapter robustness
+* Transition toward real Android environment
+---
+How I like to work:
+* Slow, step-by-step
+* Focus on logic over UI
+* Clear explanations
+* Exact code changes only when needed
+* Avoid overcomplication
+* Allow stopping and continuing later
+---
+How ChatGPT should help me:
+* Act as system/architecture guide
+* Use Windsurf as code scanner
+* Base answers on my actual code flow (not assumptions)
+* Challenge incorrect reasoning
+* Keep fixes minimal and precise
+---
+Workflow:
+Windsurf → scans code
+→ I bring structured info
+→ ChatGPT → analyzes + refines
+
+continue from v1.7 — upgrade android simulation realism
