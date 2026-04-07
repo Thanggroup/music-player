@@ -91,6 +91,11 @@ function loadSong(play = true) {
       break;
     }
 
+    if (!foundValid || !songs[currentSong] || !songs[currentSong].file) {
+      console.warn("No valid song to load");
+      return;
+    } 
+
     currentSong = (currentSong + 1) % songs.length;
     attempts++;
   }
