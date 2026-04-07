@@ -72,6 +72,9 @@ let lastSaveTime = 0;
 
 let isLoading = false;
 
+let loadVersion = 0;
+let activeLoadSongIndex = 0;
+
 //Logic Layer (Core Functionality)
 function loadSong(play = true) {
 
@@ -91,6 +94,12 @@ function loadSong(play = true) {
     currentSong = (currentSong + 1) % songs.length;
     attempts++;
   }
+
+  // ✅ ONLY HERE — after final song is decided
+  loadVersion++;
+  const currentLoadVersion = loadVersion;
+  activeLoadSongIndex = currentSong;
+  player._loadVersion = currentLoadVersion;
 
   // ONLY load if a valid song exists
   if (foundValid) {
@@ -212,19 +221,21 @@ function processSongEnd() {
 }
 
 function handleLoadedMetadata() {
+  // Ignore outdated loads
+  if (this._loadVersion !== loadVersion) return;
+
   durationDisplay.textContent = formatTime(player.duration);
 
-    if (isRepeating) {
-    player.currentTime = 0; // force restart
+  if (isRepeating) {
+    player.currentTime = 0;
     isRepeating = false;
     return;
   }
 
-// Only restore time if loading the SAME song
-    if (currentSong === playerState.currentIndex) {
+  if (activeLoadSongIndex === playerState.currentIndex) {
     player.currentTime = playerState.currentTime || 0;
   } else {
-    player.currentTime = 0;  // Reset to start if different song
+    player.currentTime = 0;
   }
 }
 
