@@ -1,3 +1,0 @@
-Option 1 — Simulate Android Data (⭐ Best for your goal)
-Option 2 — Real Metadata (ID3 Tags)
-Option 3 — Android MediaStore Deep Dive
