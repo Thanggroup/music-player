@@ -12,6 +12,7 @@ const volumeSlider = document.getElementById("volumeSlider");
 const repeatBtn = document.getElementById("repeatBtn");
 const shuffleBtn = document.getElementById("shuffleBtn");
 const fileInput = document.getElementById("fileInput");
+const deviceBtn = document.getElementById("deviceBtn");
 
 // Initialize Core
 const core = createPlayerCore({ player });
@@ -172,6 +173,17 @@ player.addEventListener("ended", () => {
   syncUI();
 });
 
+// File upload
+fileInput.addEventListener("change", (e) => {
+  handleFileUpload(e, core);
+  syncUI();
+});
+
+deviceBtn.addEventListener("click", () => {
+  loadDeviceSongs(core);
+  syncUI();
+});
+
 // Keyboard controls
 document.addEventListener("keydown", handleKeydown);
 
@@ -207,5 +219,7 @@ const initialSongs = [
 ];
 
 core.setPlaylist(initialSongs);
+// Load songs from "device" (mocked)
+loadDeviceSongs(core);
 syncUI();
 core.loadSong(false);

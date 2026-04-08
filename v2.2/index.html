@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>My Music Player</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <h1>Music Player</h1>
+  <p id="songTitle">Now Playing:</p> 
+
+  <audio id="player"></audio>
+
+  <input type="range" id="progressBar" value="0" min="0" max="100">
+
+  <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+
+  <label class="upload-btn">
+    Upload Songs
+  <input type="file" id="fileInput" multiple accept="audio/*" hidden>
+  </label>
+
+  <p>
+  <span id="currentTime">0:00</span>
+  /
+  <span id="duration">0:00</span>
+  </p>
+
+  <button id="prevBtn">Prev</button>
+  <button id="playBtn">▶/⏸</button> 
+  <button id="nextBtn">Next</button> 
+  <button id="repeatBtn">Repeat: Off</button>
+  <button id="shuffleBtn">Shuffle: Off</button>
+
+  <h2>Playlist</h2>
+  <ul id="playlist"></ul>
+
+  <button id="deviceBtn" style="margin: 10px; padding: 8px; background: #ff9800; color: white; border: none; cursor: pointer;">
+    📱 Test Device Load
+  </button>
+  <div id="loadingStatus"></div>
+
+  <script src="data/songProcessor.js"></script>
+  <script src="core/playerCore.js"></script>
+  <script src="platform/webPlayer.js"></script>
+  <script src="platform/androidMock.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
