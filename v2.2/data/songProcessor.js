@@ -53,23 +53,23 @@ function processSongBatch(rawSongs) {
  */
 function normalizeSongTitle(song) {
   // internal cleaner (combined here)
-function clean(name) {
-  let decoded = name;
+  function clean(name) {
+    let decoded = name;
 
-  // Step 1: try decode URI (safe)
-  try {
-    decoded = decodeURIComponent(name);
-  } catch (e) {
-    // ignore if not encoded
+    // Step 1: try decode URI (safe)
+    try {
+      decoded = decodeURIComponent(name);
+    } catch (e) {
+      // ignore if not encoded
+    }
+
+    return decoded
+      .replace(/\.[^/.]+$/, "")   // remove extension
+      .replace(/\+/g, " ")        // + → space (important for URLs)
+      .replace(/[_\-]/g, " ")     // separators
+      .replace(/\d+$/, "")        // trailing numbers
+      .trim();
   }
-
-  return decoded
-    .replace(/\.[^/.]+$/, "")   // remove extension
-    .replace(/\+/g, " ")        // + → space (important for URLs)
-    .replace(/[_\-]/g, " ")     // separators
-    .replace(/\d+$/, "")        // trailing numbers
-    .trim();
-}
 
   // Case 1: use existing title
   if (song.title && typeof song.title === "string" && song.title.trim() !== "") {
