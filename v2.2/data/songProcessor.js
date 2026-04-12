@@ -20,19 +20,23 @@ function processSongBatch(rawSongs) {
     return [];
   }
 
-  // Build internal flags for each song (not exported)
   const internalFlags = buildFlagsArray(rawSongs);
 
-  // Process each song: normalize + validate
   const processedSongs = rawSongs.map((song, index) => {
     const flags = internalFlags[index];
     const normalizedTitle = normalizeSongTitle(song);
 
+    let fileForPlayback = song.file;
+
+    // Only convert if it's a File AND not already converted
+    if (song.file instanceof File) {
+      fileForPlayback = URL.createObjectURL(song.file);
+    }
+
     return {
       title: normalizedTitle,
-      file: song.file || null,
+      file: fileForPlayback || null,
       playable: !shouldBlockPlayback(flags),
-      // Keep original for reference if needed
       original: song
     };
   });
@@ -48,22 +52,37 @@ function processSongBatch(rawSongs) {
  * 4. Default to "Unknown Title" as last resort
  */
 function normalizeSongTitle(song) {
-  // If title exists and is not empty string
-  if (song.title && typeof song.title === 'string' && song.title.trim() !== '') {
-    return song.title.trim();
+  // internal cleaner (combined here)
+function clean(name) {
+  let decoded = name;
+
+  // Step 1: try decode URI (safe)
+  try {
+    decoded = decodeURIComponent(name);
+  } catch (e) {
+    // ignore if not encoded
   }
 
-  // Fall back to filename from file path
-  if (song.file && typeof song.file === 'string') {
-    if (song.file.startsWith("blob:")) {
-        return "Local Audio"; // or fallback
-    }
-    const filename = extractFilenameFromPath(song.file);
-    return cleanSongName(filename);
+  return decoded
+    .replace(/\.[^/.]+$/, "")   // remove extension
+    .replace(/\+/g, " ")        // + → space (important for URLs)
+    .replace(/[_\-]/g, " ")     // separators
+    .replace(/\d+$/, "")        // trailing numbers
+    .trim();
 }
 
-  // Last resort
-  return "Unknown Title";
+  // Case 1: use existing title
+  if (song.title && typeof song.title === "string" && song.title.trim() !== "") {
+    return clean(song.title);
+  }
+
+  // Case 2: fallback to file name
+  if (song.file && song.file.name) {
+    return clean(song.file.name);
+  }
+
+  // Case 3: safe fallback
+  return "Unknown";
 }
 
 /**

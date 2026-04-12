@@ -222,4 +222,3 @@ core.setPlaylist(initialSongs);
 // Load songs from "device" (mocked)
 loadDeviceSongs(core);
 syncUI();
-core.loadSong(false);

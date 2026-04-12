@@ -257,7 +257,7 @@ function createPlayerCore({ player }) {
     saveState();
   }
 
-  function setPlaylist(newSongs) {
+function setPlaylist(newSongs) {
     player.pause();
 
     songs.forEach(song => {
@@ -267,12 +267,16 @@ function createPlayerCore({ player }) {
     });
 
     songs = newSongs;
-
     currentSong = 0;
 
     if (shuffleMode) {
       createShuffle();
       shuffleIndex = 0;
+    }
+
+    // Only load if songs exist
+    if (songs.length > 0) {
+      loadSong(false);
     }
   }
 
