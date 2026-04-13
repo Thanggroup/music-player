@@ -17,6 +17,9 @@ const deviceBtn = document.getElementById("deviceBtn");
 // Initialize Core
 const core = createPlayerCore({ player });
 
+// "web" or "android"
+const MODE = "web"; 
+
 // UI Helper Functions
 
 function formatTime(seconds) {
@@ -126,6 +129,26 @@ function handleKeydown(event) {
   }
 }
 
+function initWebApp(core) {
+  // enable upload
+  fileInput.addEventListener("change", (e) => {
+    handleFileUpload(e, core);
+    syncUI();
+  });
+}
+
+function initAndroidApp(core) {
+  // load mock automatically
+  loadDeviceSongs(core);
+  syncUI();
+
+  // optional: keep button for testing
+  deviceBtn.addEventListener("click", () => {
+    loadDeviceSongs(core);
+    syncUI();
+  });
+}
+
 // Event Layer: Wiring
 
 // Control buttons
@@ -173,16 +196,6 @@ player.addEventListener("ended", () => {
   syncUI();
 });
 
-// File upload
-fileInput.addEventListener("change", (e) => {
-  handleFileUpload(e, core);
-  syncUI();
-});
-
-deviceBtn.addEventListener("click", () => {
-  loadDeviceSongs(core);
-  syncUI();
-});
 
 // Keyboard controls
 document.addEventListener("keydown", handleKeydown);
@@ -218,7 +231,14 @@ const initialSongs = [
   }
 ];
 
-core.setPlaylist(initialSongs);
+//core.setPlaylist(initialSongs);
 // Load songs from "device" (mocked)
-loadDeviceSongs(core);
+// loadDeviceSongs(core);
 syncUI();
+
+//initialization based on mode
+if (MODE === "web") {
+  initWebApp(core);
+} else {
+  initAndroidApp(core);
+}
