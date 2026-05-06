@@ -1,4 +1,4 @@
-function createPlayerCore({ player }) {
+export function createPlayerCore({ player }) {
   
   let songs = [];
   let currentSong = 0;

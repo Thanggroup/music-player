@@ -22,3 +22,29 @@ v0.8 – time display
 - HTML
 - CSS
 - JavaScript
+
+# Mondi Player — Setup Guide
+
+## Requirements
+
+* Node.js (v18+ recommended)
+* npm
+* Android Studio
+
+## Setup
+
+```bash
+npm install
+npx cap sync
+npx cap open android
+```
+
+## Run
+
+* Open Android Studio
+* Click Run ▶️
+
+## Notes
+
+* Web app lives in `/app`
+* Do not modify `/android` unless needed
