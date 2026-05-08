@@ -198,3 +198,15 @@ volumeSlider.value = player.volume;
 syncUI();
 
 initAndroidApp(core, { syncUI });
+const MusicPlugin = window.Capacitor.Plugins.MusicPlugin;
+
+async function testPlugin() {
+  try {
+    await MusicPlugin.ping();
+    console.log('Native plugin connected');
+  } catch (err) {
+    console.error('Plugin error:', err);
+  }
+}
+
+testPlugin();
