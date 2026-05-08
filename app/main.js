@@ -210,3 +210,17 @@ async function testPlugin() {
 }
 
 testPlugin();
+
+async function testGetSongs() {
+  try {
+    const result = await MusicPlugin.getSongs();
+
+    console.log(JSON.stringify(result));
+    console.log(JSON.stringify(result.songs));
+
+  } catch (err) {
+    console.error('getSongs error:', err);
+  }
+}
+
+testGetSongs();
