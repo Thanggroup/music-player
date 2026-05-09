@@ -11,7 +11,23 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
-@CapacitorPlugin(name = "MusicPlugin")
+import android.Manifest;
+
+import com.getcapacitor.PermissionState;
+
+import com.getcapacitor.annotation.Permission;
+import com.getcapacitor.annotation.CapacitorPlugin;
+import com.getcapacitor.annotation.PermissionCallback;
+
+@CapacitorPlugin(
+        name = "MusicPlugin",
+    permissions = {
+        @Permission(
+            strings = { Manifest.permission.READ_MEDIA_AUDIO },
+            alias = "audio"
+        )
+    }
+)
 public class MusicPlugin extends Plugin {
 
     @PluginMethod
@@ -20,6 +36,11 @@ public class MusicPlugin extends Plugin {
     }
     @PluginMethod
     public void getSongs(PluginCall call){
+
+        if (getPermissionState("audio") != PermissionState.GRANTED) {
+            requestPermissionForAlias("audio", call, "audioPermsCallback");
+            return;
+        }
 
         try {
 
@@ -72,6 +93,16 @@ public class MusicPlugin extends Plugin {
 
         } catch (Exception e) {
             call.reject("Failed to load songs", e);
+        }
+    }
+
+    @PermissionCallback
+    private void audioPermsCallback(PluginCall call) {
+
+        if (getPermissionState("audio") == PermissionState.GRANTED) {
+            getSongs(call);
+        } else {
+            call.reject("Audio permission denied");
         }
     }
 }
