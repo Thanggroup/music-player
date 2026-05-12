@@ -15,10 +15,12 @@ async function loadDeviceSongs(core) {
     const result = await MusicPlugin.getSongs();
 
     const rawSongs = result.songs || [];
+    const convertedSongs = rawSongs.map(song => ({
+      ...song,
+      file: window.Capacitor.convertFileSrc(song.file)
+    }));
 
-    console.log(JSON.stringify(rawSongs));
-
-    const processedSongs = processSongBatch(rawSongs);
+    const processedSongs = processSongBatch(convertedSongs);
 
     core.setPlaylist(processedSongs);
 
