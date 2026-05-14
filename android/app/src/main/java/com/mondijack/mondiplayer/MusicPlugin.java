@@ -48,7 +48,10 @@ public class MusicPlugin extends Plugin {
 
             String[] projection = new String[] {
                 MediaStore.Audio.Media._ID,
-                MediaStore.Audio.Media.TITLE
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.ALBUM,
+                MediaStore.Audio.Media.DURATION
             };
 
             String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
@@ -65,11 +68,17 @@ public class MusicPlugin extends Plugin {
 
                 int idCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID);
                 int titleCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE);
+                int artistCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST);
+                int albumCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM);
+                int durationCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION);
 
                 while (cursor.moveToNext()) {
 
                     long id = cursor.getLong(idCol);
                     String title = cursor.getString(titleCol);
+                    String artist = cursor.getString(artistCol);
+                    String album = cursor.getString(albumCol);
+                    long duration = cursor.getLong(durationCol);
 
                     Uri contentUri = ContentUris.withAppendedId(
                         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
@@ -78,6 +87,9 @@ public class MusicPlugin extends Plugin {
 
                     JSObject song = new JSObject();
                     song.put("title", title != null ? title : "");
+                    song.put("artist", artist != null ? artist : "");
+                    song.put("album", album != null ? album : "");
+                    song.put("duration", duration);
                     song.put("file", contentUri.toString());
 
                     songs.put(song);

@@ -34,6 +34,7 @@ export function processSongBatch(rawSongs) {
     }
 
     return {
+      ...song,
       title: normalizedTitle,
       file: fileForPlayback || null,
       playable: !shouldBlockPlayback(flags),

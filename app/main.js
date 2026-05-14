@@ -36,7 +36,29 @@ function renderPlaylist() {
   
   songs.forEach((song, index) => {
     const li = document.createElement("li");
-    li.textContent = song.title;
+
+    const durationText = song.duration
+      ? formatTime(song.duration / 1000)
+      : "--:--";
+
+    const rawArtist = song.artist?.trim();
+
+    const artistText =
+      rawArtist &&
+      rawArtist !== "<unknown>"
+        ? rawArtist
+        : "Unknown Artist";
+
+    const metaParts = [artistText];
+
+    if (durationText) {
+      metaParts.push(durationText);
+    }
+
+    li.innerHTML = `
+      <strong>${song.title}</strong><br>
+      <small>${metaParts.join(" • ")}</small>
+    `;
     
     if (index === currentIndex) {
       li.classList.add("active");
@@ -52,10 +74,20 @@ function renderPlaylist() {
 }
 
 function updateSongTitle() {
+  const songs = core.getSongs();
   const song = core.getCurrentSong();
-  if (song) {
-    songTitle.textContent = "Now Playing: " + song.title;
+
+  if (!songs || songs.length === 0) {
+    songTitle.textContent = "No songs found";
+    return;
   }
+
+  if (!song || song.playable === false) {
+    songTitle.textContent = "No playable songs";
+    return;
+  }
+
+  songTitle.textContent = "Now Playing: " + song.title;
 }
 
 function updateRepeatButton() {

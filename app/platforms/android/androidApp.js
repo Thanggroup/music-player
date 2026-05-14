@@ -8,7 +8,7 @@ import { processSongBatch } from '../../service/songProcessor.js';
 
 const MusicPlugin = window.Capacitor.Plugins.MusicPlugin;
 
-async function loadDeviceSongs(core) {
+async function loadDeviceSongs(core, syncUI) {
 
   try {
 
@@ -23,6 +23,7 @@ async function loadDeviceSongs(core) {
     const processedSongs = processSongBatch(convertedSongs);
 
     core.setPlaylist(processedSongs);
+    syncUI();
 
   } catch (err) {
     console.error('Native songs error:', err);
@@ -30,16 +31,12 @@ async function loadDeviceSongs(core) {
 }
 
 export function initAndroidApp(core, { syncUI }) {
-  // load mock automatically
-  loadDeviceSongs(core).then(() => {
-    syncUI();
-  });
+    loadDeviceSongs(core, syncUI);
   
   // optional: keep button for testing
   deviceBtn.addEventListener("click", () => {
-    loadDeviceSongs(core).then(() => {
-      syncUI();
+    loadDeviceSongs(core, syncUI);
+
     });
-  });
-}
+  };
 
