@@ -1,48 +1,48 @@
-// HTMLAudioElement adapter layer
-export function createAudioService(player) {
+// Playback service wrapper layer
+export function createAudioService(backend) {
 
   let loadVersion = 0;
 
   return {
 
     play() {
-      return player.play();
+      return backend.play();
     },
 
     pause() {
-      player.pause();
+      backend.pause();
     },
 
     load() {
-      player.load();
+      backend.load();
     },
 
     setSource(src) {
-      player.src = src;
+      backend.setSource(src);
     },
 
     getCurrentTime() {
-      return player.currentTime;
+      return backend.getCurrentTime();
     },
 
     setCurrentTime(time) {
-      player.currentTime = time;
+      backend.setCurrentTime(time);
     },
 
     getDuration() {
-      return player.duration;
+      return backend.getDuration();
     },
 
     getVolume() {
-      return player.volume;
+      return backend.getVolume();
     },
 
     setVolume(volume) {
-      player.volume = volume;
+      backend.setVolume(volume);
     },
 
     isPaused() {
-      return player.paused;
+      return backend.isPaused();
     },
 
     setLoadVersion(version) {
@@ -54,11 +54,11 @@ export function createAudioService(player) {
     },
 
     on(event, handler) {
-      player.addEventListener(event, handler);
+      backend.on(event, handler);
     },
 
     getElement() {
-      return player;
+      return backend.getElement();
     }
 
   };

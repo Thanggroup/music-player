@@ -7,9 +7,14 @@ import { initUI } from './ui/initUI.js';
 
 import { initAndroidApp } from './platforms/android/androidApp.js';
 
+import { createHtmlAudioBackend } from './services/backends/htmlAudioBackend.js';
+
 const player = document.getElementById('player');
 
-const audioService = createAudioService(player);
+const backend = createHtmlAudioBackend(player);
+
+const audioService = createAudioService(backend);
+
 const storageService = createStorageService();
 
 const core = createPlayerCore({
