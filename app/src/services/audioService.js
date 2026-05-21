@@ -55,10 +55,6 @@ export function createAudioService(backend) {
 
     on(event, handler) {
       backend.on(event, handler);
-    },
-
-    getElement() {
-      return backend.getElement();
     }
 
   };

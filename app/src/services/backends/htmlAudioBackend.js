@@ -1,4 +1,40 @@
+// services/backends/htmlAudioBackend.js
+
 export function createHtmlAudioBackend(player) {
+
+  const listeners = {};
+
+  function on(event, handler) {
+    if (!listeners[event]) {
+      listeners[event] = new Set();
+    }
+
+    listeners[event].add(handler);
+  }
+
+  function off(event, handler) {
+    listeners[event]?.delete(handler);
+  }
+
+  function emit(event, payload) {
+    listeners[event]?.forEach((handler) => {
+      handler(payload);
+    });
+  }
+
+  const domEvents = [
+    "play",
+    "pause",
+    "loadedmetadata",
+    "timeupdate",
+    "ended"
+  ];
+
+  domEvents.forEach((event) => {
+    player.addEventListener(event, () => {
+      emit(event);
+    });
+  });
 
   return {
 
@@ -42,13 +78,11 @@ export function createHtmlAudioBackend(player) {
       return player.paused;
     },
 
-    on(event, handler) {
-      player.addEventListener(event, handler);
-    },
+    on,
 
-    getElement() {
-      return player;
-    }
+    off,
+
+    emit
 
   };
 
