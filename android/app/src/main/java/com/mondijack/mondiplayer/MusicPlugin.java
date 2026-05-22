@@ -3,7 +3,6 @@ package com.mondijack.mondiplayer;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
-import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import android.content.ContentUris;
@@ -29,6 +28,95 @@ import com.getcapacitor.annotation.PermissionCallback;
     }
 )
 public class MusicPlugin extends Plugin {
+
+    private static final String TAG = "MusicPlugin";
+    private String currentSource = "";
+    private double currentTime = 0;
+    private double duration = 0;
+    private double volume = 1;
+
+    @PluginMethod
+    public void play(PluginCall call) {
+
+    android.util.Log.d(TAG, "play()");
+
+    JSObject data = new JSObject();
+    data.put("currentTime", currentTime);
+
+    notifyListeners("playback:play", data);
+
+    call.resolve();
+
+    }
+
+    @PluginMethod
+    public void pause(PluginCall call) {
+
+    android.util.Log.d(TAG, "pause()");
+
+    JSObject data = new JSObject();
+    data.put("currentTime", currentTime);
+
+    notifyListeners("playback:pause", data);
+
+    call.resolve();
+
+    }
+
+    @PluginMethod
+    public void load(PluginCall call) {
+
+    android.util.Log.d(TAG, "load()");
+
+    duration = 180;
+
+    JSObject data = new JSObject();
+    data.put("duration", duration);
+
+    notifyListeners("playback:loadedmetadata", data);
+
+    call.resolve();
+
+    }
+
+    @PluginMethod
+    public void setSource(PluginCall call) {
+
+    currentSource = call.getString("src", "");
+
+    android.util.Log.d(TAG, "setSource(): " + currentSource);
+
+    call.resolve();
+
+    }
+
+    @PluginMethod
+    public void seekTo(PluginCall call) {
+
+    currentTime = call.getDouble("time", 0);
+
+    android.util.Log.d(TAG, "seekTo(): " + currentTime);
+
+    JSObject data = new JSObject();
+    data.put("currentTime", currentTime);
+    data.put("duration", duration);
+
+    notifyListeners("playback:timeupdate", data);
+
+    call.resolve();
+
+    }
+
+    @PluginMethod
+    public void setVolume(PluginCall call) {
+
+    volume = call.getDouble("volume", 1);
+
+    android.util.Log.d(TAG, "setVolume(): " + volume);
+
+    call.resolve();
+
+    }
 
     @PluginMethod
     public void ping(PluginCall call) {
