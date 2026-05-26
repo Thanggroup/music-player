@@ -132,9 +132,13 @@ export function initUI({
 
     const progress = (currentTime / duration) * 100;
 
+    isProgrammaticUpdate = true;
+
     progressBar.value = progress;
 
     currentTimeDisplay.textContent = formatTime(currentTime);
+
+    isProgrammaticUpdate = false;
 
     core.handleTimeUpdate();
   }
@@ -195,7 +199,22 @@ export function initUI({
     core.handleVolumeChange(Number(e.target.value));
   });
 
+  let isUserSeeking = false;
+  let isProgrammaticUpdate = false;
+
+  progressBar.addEventListener("pointerdown", () => {
+    isUserSeeking = true;
+  });
+
+  progressBar.addEventListener("pointerup", () => {
+    isUserSeeking = false;
+  });
+
   progressBar.addEventListener("input", (e) => {
+
+    if (isProgrammaticUpdate)
+      return;
+
     core.handleSeek(e.target.value);
   });
 

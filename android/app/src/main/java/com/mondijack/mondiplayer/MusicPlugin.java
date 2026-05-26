@@ -18,6 +18,13 @@ import com.getcapacitor.annotation.Permission;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.PermissionCallback;
 
+import androidx.media3.common.MediaItem;
+import androidx.media3.common.Player;
+import androidx.media3.exoplayer.ExoPlayer;
+
+import android.os.Handler;
+import android.os.Looper;
+
 @CapacitorPlugin(
         name = "MusicPlugin",
     permissions = {
@@ -28,22 +35,110 @@ import com.getcapacitor.annotation.PermissionCallback;
     }
 )
 public class MusicPlugin extends Plugin {
-
+    // fields
     private static final String TAG = "MusicPlugin";
     private String currentSource = "";
     private double currentTime = 0;
     private double duration = 0;
     private double volume = 1;
 
+    private ExoPlayer player;
+
+    private Handler progressHandler;
+    private Runnable progressRunnable;
+
+    private ExoPlayer getPlayer() {
+
+        if (player == null) {
+
+            player = new ExoPlayer.Builder(getContext()).build();
+
+            player.addListener(new Player.Listener() {
+
+                @Override
+                public void onPlaybackStateChanged(int playbackState) {
+
+                    if (playbackState == Player.STATE_READY) {
+
+                        duration = player.getDuration() / 1000.0;
+
+                        JSObject data = new JSObject();
+                        data.put("duration", duration);
+
+                        notifyListeners("playback:loadedmetadata", data);
+                    }
+                }
+
+                @Override
+                public void onIsPlayingChanged(boolean isPlaying) {
+
+                    JSObject data = new JSObject();
+                    data.put("currentTime", player.getCurrentPosition() / 1000.0);
+
+                    notifyListeners(
+                        isPlaying ? "playback:play" : "playback:pause",
+                        data
+                    );
+                }
+            });
+        }
+
+        return player;
+    }
+
+    private void startProgressUpdates() {
+
+            stopProgressUpdates();
+
+            progressHandler =
+                new Handler(player.getApplicationLooper());
+
+            progressRunnable = new Runnable() {
+
+                @Override
+                public void run() {
+
+                    if (player == null) {
+                        return;
+                    }
+
+                    currentTime =
+                        player.getCurrentPosition() / 1000.0;
+
+                    duration =
+                        player.getDuration() / 1000.0;
+
+                    JSObject data = new JSObject();
+                    data.put("currentTime", currentTime);
+                    data.put("duration", duration);
+
+                    notifyListeners("playback:timeupdate", data);
+
+                    progressHandler.postDelayed(this, 250);
+                }
+            };
+
+            progressHandler.post(progressRunnable);
+        }
+
+    private void stopProgressUpdates() {
+
+        if (progressRunnable != null) {
+                progressHandler.removeCallbacks(progressRunnable);
+        }
+
+    }   
+
     @PluginMethod
     public void play(PluginCall call) {
 
     android.util.Log.d(TAG, "play()");
 
-    JSObject data = new JSObject();
-    data.put("currentTime", currentTime);
+    ExoPlayer player = getPlayer();
 
-    notifyListeners("playback:play", data);
+    player.play();
+
+    startProgressUpdates();
 
     call.resolve();
 
@@ -54,10 +149,11 @@ public class MusicPlugin extends Plugin {
 
     android.util.Log.d(TAG, "pause()");
 
-    JSObject data = new JSObject();
-    data.put("currentTime", currentTime);
+    ExoPlayer player = getPlayer();
 
-    notifyListeners("playback:pause", data);
+    player.pause();
+
+    stopProgressUpdates();
 
     call.resolve();
 
@@ -66,17 +162,19 @@ public class MusicPlugin extends Plugin {
     @PluginMethod
     public void load(PluginCall call) {
 
-    android.util.Log.d(TAG, "load()");
+        if (currentSource == null || currentSource.isEmpty()) {
+            call.reject("No source set");
+            return;
+        }
 
-    duration = 180;
+        MediaItem mediaItem = MediaItem.fromUri(currentSource);
 
-    JSObject data = new JSObject();
-    data.put("duration", duration);
+        ExoPlayer player = getPlayer();
 
-    notifyListeners("playback:loadedmetadata", data);
+        player.setMediaItem(mediaItem);
+        player.prepare();
 
-    call.resolve();
-
+        call.resolve();
     }
 
     @PluginMethod
@@ -93,7 +191,10 @@ public class MusicPlugin extends Plugin {
     @PluginMethod
     public void seekTo(PluginCall call) {
 
-    currentTime = call.getDouble("time", 0);
+    currentTime = call.getDouble("time", 0.0);
+
+    ExoPlayer player = getPlayer();
+    player.seekTo((long)(currentTime * 1000));
 
     android.util.Log.d(TAG, "seekTo(): " + currentTime);
 
@@ -110,7 +211,7 @@ public class MusicPlugin extends Plugin {
     @PluginMethod
     public void setVolume(PluginCall call) {
 
-    volume = call.getDouble("volume", 1);
+    volume = call.getDouble("volume", 1.0);
 
     android.util.Log.d(TAG, "setVolume(): " + volume);
 

@@ -12,7 +12,8 @@ async function loadDeviceSongs(core) {
     const rawSongs = result.songs || [];
     const convertedSongs = rawSongs.map(song => ({
       ...song,
-      file: window.Capacitor.convertFileSrc(song.file)
+      file: window.Capacitor.convertFileSrc(song.file),
+      nativeFile: song.file
     }));
 
     const processedSongs = processSongBatch(convertedSongs);

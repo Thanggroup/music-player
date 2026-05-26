@@ -9,6 +9,7 @@ export function createAndroidAudioBackend() {
   const nativeListenerHandles = [];
 
   let listenersAttached = false;
+  let isSeeking = false;
 
   const state = {
     source: "",
@@ -89,7 +90,7 @@ export function createAndroidAudioBackend() {
     const timeupdateHandle = await MusicPlugin.addListener(
       "playback:timeupdate",
       (data) => {
-        if (typeof data.currentTime === "number") {
+        if (!isSeeking && typeof data.currentTime === "number") {
           state.currentTime = data.currentTime;
         }
 
@@ -129,27 +130,29 @@ export function createAndroidAudioBackend() {
   return {
 
     async play() {
-      state.paused = false;
-
-      emit("play");
 
       console.log("[AndroidBackend] play()");
+
+      await MusicPlugin.play();
     },
 
     async pause() {
-      state.paused = true;
-
-      emit("pause");
 
       console.log("[AndroidBackend] pause()");
+
+      await MusicPlugin.pause();
     },
 
     async load() {
       console.log("[AndroidBackend] load()");
+
+      await MusicPlugin.load();
     },
 
     async setSource(src) {
       state.source = src;
+
+      await MusicPlugin.setSource({ src });
 
       console.log("[AndroidBackend] setSource()", src);
     },
@@ -159,9 +162,21 @@ export function createAndroidAudioBackend() {
     },
 
     async setCurrentTime(time) {
+
       state.currentTime = time;
 
+      isSeeking = true;
+
+      await MusicPlugin.seekTo({
+        time
+      });
+
       console.log("[AndroidBackend] setCurrentTime()", time);
+
+      // release guard after native stabilizes
+      setTimeout(() => {
+        isSeeking = false;
+      }, 300);
     },
 
     getDuration() {

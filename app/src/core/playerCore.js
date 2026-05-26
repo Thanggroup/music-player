@@ -83,7 +83,15 @@ export function createPlayerCore({
     audioService.setLoadVersion(currentLoadVersion);
 
     if (foundValid) {
-      audioService.setSource(playlist.getSongs()[playlist.getCurrentIndex()].file);
+      const currentSong =
+        playlist.getSongs()[playlist.getCurrentIndex()];
+
+      const source =
+        window.Capacitor.getPlatform() === "android"
+          ? currentSong.nativeFile || currentSong.file
+          : currentSong.file;
+
+      audioService.setSource(source);
       audioService.load();
     }
 
@@ -142,17 +150,11 @@ export function createPlayerCore({
   function handleLoadedMetadata() {
     if (audioService.getLoadVersion() !== loadVersion) return;
 
-    if (isRepeating) {
-      audioService.setCurrentTime(0);
-      isRepeating = false;
-      return;
-    }
+    // ONLY cache sync — NO seeking
+    playerState.duration = audioService.getDuration();
 
-    if (activeLoadSongIndex === playerState.currentIndex) {
-      audioService.setCurrentTime(playerState.currentTime || 0);
-    } else {
-      audioService.setCurrentTime(0);
-    }
+    // optional: keep index tracking only
+    playerState.currentIndex = activeLoadSongIndex;
   }
 
   function handleTimeUpdate() {
