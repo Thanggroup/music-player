@@ -105,12 +105,32 @@ export function initUI({
     }
   }
 
-  function handlePlay() {
+  function handlePlay(event) {
+
+    if (!event) return;
+
+    if (
+      event.loadVersion !==
+      audioService.getLoadVersion()
+    ) {
+      return;
+    }
+
     playBtn.textContent = "⏸";
     playBtn.classList.add("playing");
   }
 
-  function handlePause() {
+  function handlePause(event) {
+
+    if (!event) return;
+
+    if (
+      event.loadVersion !==
+      audioService.getLoadVersion()
+    ) {
+      return;
+    }
+
     playBtn.textContent = "▶";
     playBtn.classList.remove("playing");
   }

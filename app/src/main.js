@@ -43,4 +43,7 @@ initUI({
   audioService
 });
 
-initAndroidApp(core);
+initAndroidApp(
+  core,
+  audioService
+);

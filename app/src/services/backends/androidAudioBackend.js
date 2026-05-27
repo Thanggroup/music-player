@@ -137,6 +137,44 @@ export function createAndroidAudioBackend() {
     console.log("[AndroidBackend] destroy()");
   }
 
+  async function syncState() {
+
+    if (!MusicPlugin) return;
+
+    console.log("[AndroidBackend] syncState()");
+
+    const nativeState =
+      await MusicPlugin.getPlaybackState();
+
+    state.source =
+      nativeState.source || "";
+
+    state.currentTime =
+      typeof nativeState.currentTime === "number"
+        ? nativeState.currentTime
+        : 0;
+
+    state.duration =
+      typeof nativeState.duration === "number"
+        ? nativeState.duration
+        : 0;
+
+    state.paused =
+      typeof nativeState.paused === "boolean"
+        ? nativeState.paused
+        : true;
+
+    emit("loadedmetadata");
+
+    emit("timeupdate");
+
+    emit(
+      state.paused
+        ? "pause"
+        : "play"
+    );
+  }
+
   return {
 
     async play() {
@@ -217,7 +255,9 @@ export function createAndroidAudioBackend() {
 
     detachNativeListeners,
 
-    destroy
+    destroy,
+
+    syncState
 
   };
 

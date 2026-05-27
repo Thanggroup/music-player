@@ -3,6 +3,8 @@ import { processSongBatch } from '../../services/songProcessor.js';
 
 const MusicPlugin = window.Capacitor.Plugins.MusicPlugin;
 
+const App = window.Capacitor.Plugins.App;
+
 async function loadDeviceSongs(core) {
 
   try {
@@ -25,8 +27,25 @@ async function loadDeviceSongs(core) {
   }
 }
 
-export function initAndroidApp(core) {
+  export function initAndroidApp(
+    core,
+    audioService
+  ) {
     loadDeviceSongs(core);
+
+    App.addListener(
+      "appStateChange",
+      async ({ isActive }) => {
+
+        if (!isActive) return;
+
+        console.log(
+          "[AndroidApp] resume → syncState()"
+        );
+
+        await audioService.syncState();
+      }
+    );
   
   // optional: keep button for testing
   deviceBtn.addEventListener("click", () => {

@@ -304,6 +304,33 @@ public class MusicPlugin extends Plugin {
         }
     }
 
+    @PluginMethod
+    public void getPlaybackState(PluginCall call) {
+
+        ExoPlayer player = getPlayer();
+
+        JSObject data = new JSObject();
+
+        data.put("source", currentSource);
+
+        data.put(
+            "currentTime",
+            player.getCurrentPosition() / 1000.0
+        );
+
+        data.put(
+            "duration",
+            player.getDuration() / 1000.0
+        );
+
+        data.put(
+            "paused",
+            !player.isPlaying()
+        );
+
+        call.resolve(data);
+    }
+
     @PermissionCallback
     private void audioPermsCallback(PluginCall call) {
 

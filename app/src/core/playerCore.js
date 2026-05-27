@@ -162,7 +162,14 @@ export function createPlayerCore({
     playerState.currentIndex = activeLoadSongIndex;
   }
 
-  function handleTimeUpdate() {
+  function handleTimeUpdate(event) {
+
+    if (!event) return;
+
+    if (event.loadVersion !== loadVersion) {
+      return;
+    }
+
     if (!audioService.getDuration()) return;
 
     const now = Date.now();
