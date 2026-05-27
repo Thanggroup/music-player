@@ -103,6 +103,16 @@ export function createAndroidAudioBackend() {
     );
 
     nativeListenerHandles.push(timeupdateHandle);
+
+    const endedHandle = await MusicPlugin.addListener(
+      "playback:ended",
+      () => {
+        emit("ended");
+      }
+    );
+
+    nativeListenerHandles.push(endedHandle);
+    
   }
 
   async function detachNativeListeners() {

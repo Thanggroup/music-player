@@ -125,7 +125,12 @@ export function createPlayerCore({
     saveState();
   }
 
-  function processSongEnd() {
+  function processSongEnd(endedLoadVersion) {
+
+    if (endedLoadVersion !== loadVersion) {
+      return;
+    }
+
     if (repeatMode === 2) {
       isRepeating = true;
       loadSong();

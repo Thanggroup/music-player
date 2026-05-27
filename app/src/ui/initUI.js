@@ -224,7 +224,11 @@ export function initUI({
   audioService.on("timeupdate", handleTimeUpdate);
 
   audioService.on("ended", () => {
-    core.processSongEnd();
+    const endedLoadVersion =
+      audioService.getLoadVersion();
+
+    core.processSongEnd(endedLoadVersion);
+
     syncUI();
   });
 

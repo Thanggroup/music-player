@@ -58,6 +58,7 @@ public class MusicPlugin extends Plugin {
                 @Override
                 public void onPlaybackStateChanged(int playbackState) {
 
+
                     if (playbackState == Player.STATE_READY) {
 
                         duration = player.getDuration() / 1000.0;
@@ -66,6 +67,12 @@ public class MusicPlugin extends Plugin {
                         data.put("duration", duration);
 
                         notifyListeners("playback:loadedmetadata", data);
+                    }
+                    
+                    if (playbackState == Player.STATE_ENDED) {
+
+                        notifyListeners("playback:ended", new JSObject());
+                        
                     }
                 }
 
