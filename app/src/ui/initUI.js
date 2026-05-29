@@ -247,6 +247,15 @@ export function initUI({
     const endedLoadVersion =
       audioService.getLoadVersion();
 
+      console.log(
+        "[UI] ended event",
+        {
+          endedLoadVersion,
+          currentCoreLoadVersion:
+            core.getLoadVersion?.(),
+        }
+      );
+
     core.processSongEnd(endedLoadVersion);
 
     syncUI();

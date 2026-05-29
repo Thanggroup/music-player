@@ -78,6 +78,16 @@ export function createPlayerCore({
     }
 
     loadVersion++;
+
+    console.log(
+      "[PlayerCore] loadSong version advance",
+      {
+        newLoadVersion: loadVersion,
+        currentIndex:
+          playlist.getCurrentIndex(),
+      }
+    );
+
     const currentLoadVersion = loadVersion;
     activeLoadSongIndex = playlist.getCurrentIndex();
     audioService.setLoadVersion(currentLoadVersion);
@@ -127,7 +137,27 @@ export function createPlayerCore({
 
   function processSongEnd(endedLoadVersion) {
 
+    console.log(
+      "[PlayerCore] processSongEnd",
+      {
+        endedLoadVersion,
+        currentLoadVersion: loadVersion,
+        repeatMode,
+        currentIndex:
+          playlist.getCurrentIndex(),
+      }
+    );
+
     if (endedLoadVersion !== loadVersion) {
+
+      console.log(
+        "[PlayerCore] stale ended ignored",
+        {
+          endedLoadVersion,
+          currentLoadVersion: loadVersion,
+        }
+      );
+
       return;
     }
 

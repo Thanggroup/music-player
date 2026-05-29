@@ -71,6 +71,14 @@ public class MusicPlugin extends Plugin {
                     
                     if (playbackState == Player.STATE_ENDED) {
 
+                        Log.d(
+                            "MusicPlugin",
+                            "[ENDED] emit STATE_ENDED position=" +
+                            player.getCurrentPosition() +
+                            " duration=" +
+                            player.getDuration()
+                        );
+
                         notifyListeners("playback:ended", new JSObject());
                         
                     }

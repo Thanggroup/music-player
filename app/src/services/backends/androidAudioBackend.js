@@ -107,6 +107,15 @@ export function createAndroidAudioBackend() {
     const endedHandle = await MusicPlugin.addListener(
       "playback:ended",
       () => {
+        
+        console.log(
+          "[AndroidBackend] playback:ended received",
+          {
+            loadVersion:
+              audioService.getLoadVersion?.(),
+          }
+        );
+
         emit("ended");
       }
     );
