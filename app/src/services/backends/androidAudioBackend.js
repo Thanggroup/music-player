@@ -53,6 +53,10 @@ export function createAndroidAudioBackend() {
           state.currentTime = data.currentTime;
         }
 
+        console.log(
+          "[AndroidBackend] PLAY received"
+        );
+
         emit("play");
       }
     );
@@ -67,6 +71,10 @@ export function createAndroidAudioBackend() {
         if (typeof data.currentTime === "number") {
           state.currentTime = data.currentTime;
         }
+
+        console.log(
+          "[AndroidBackend] PAUSE received"
+        );
 
         emit("pause");
       }
@@ -109,11 +117,7 @@ export function createAndroidAudioBackend() {
       () => {
         
         console.log(
-          "[AndroidBackend] playback:ended received",
-          {
-            loadVersion:
-              audioService.getLoadVersion?.(),
-          }
+          "[AndroidBackend] playback:ended received"
         );
 
         emit("ended");

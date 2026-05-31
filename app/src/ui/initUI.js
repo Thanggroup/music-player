@@ -245,16 +245,11 @@ export function initUI({
 
   audioService.on("ended", () => {
     const endedLoadVersion =
-      audioService.getLoadVersion();
+    audioService.getLoadVersion();
 
-      console.log(
-        "[UI] ended event",
-        {
-          endedLoadVersion,
-          currentCoreLoadVersion:
-            core.getLoadVersion?.(),
-        }
-      );
+    console.log(
+      `[UI] ended event endedLoadVersion=${endedLoadVersion} currentCoreLoadVersion=${core.getLoadVersion?.()}`
+    );
 
     core.processSongEnd(endedLoadVersion);
 

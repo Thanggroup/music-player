@@ -80,12 +80,7 @@ export function createPlayerCore({
     loadVersion++;
 
     console.log(
-      "[PlayerCore] loadSong version advance",
-      {
-        newLoadVersion: loadVersion,
-        currentIndex:
-          playlist.getCurrentIndex(),
-      }
+      `[PlayerCore] loadSong version advance newLoadVersion=${loadVersion} currentIndex=${playlist.getCurrentIndex()}`
     );
 
     const currentLoadVersion = loadVersion;
@@ -138,14 +133,7 @@ export function createPlayerCore({
   function processSongEnd(endedLoadVersion) {
 
     console.log(
-      "[PlayerCore] processSongEnd",
-      {
-        endedLoadVersion,
-        currentLoadVersion: loadVersion,
-        repeatMode,
-        currentIndex:
-          playlist.getCurrentIndex(),
-      }
+      `[PlayerCore] processSongEnd endedLoadVersion=${endedLoadVersion} currentLoadVersion=${loadVersion} repeatMode=${repeatMode} currentIndex=${playlist.getCurrentIndex()}`
     );
 
     if (endedLoadVersion !== loadVersion) {
@@ -197,6 +185,11 @@ export function createPlayerCore({
     if (!event) return;
 
     if (event.loadVersion !== loadVersion) {
+
+      console.log(
+        `[PlayerCore] stale timeupdate eventLoadVersion=${event.loadVersion} currentLoadVersion=${loadVersion}`
+      );
+
       return;
     }
 

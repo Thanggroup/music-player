@@ -25,6 +25,8 @@ import androidx.media3.exoplayer.ExoPlayer;
 import android.os.Handler;
 import android.os.Looper;
 
+import android.util.Log;
+
 @CapacitorPlugin(
         name = "MusicPlugin",
     permissions = {
@@ -89,6 +91,12 @@ public class MusicPlugin extends Plugin {
 
                     JSObject data = new JSObject();
                     data.put("currentTime", player.getCurrentPosition() / 1000.0);
+
+                    Log.d(
+                        "MusicPlugin",
+                        "[PLAY_STATE] isPlaying=" + isPlaying +
+                        " position=" + player.getCurrentPosition()
+                    );
 
                     notifyListeners(
                         isPlaying ? "playback:play" : "playback:pause",
