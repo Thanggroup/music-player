@@ -27,6 +27,7 @@ import android.os.Looper;
 
 import android.util.Log;
 
+import org.json.JSONObject;
 import org.json.JSONException;
 
 @CapacitorPlugin(
@@ -86,15 +87,40 @@ public class MusicPlugin extends Plugin {
                     if (playbackState == Player.STATE_ENDED) {
 
                         Log.d(
-                            "MusicPlugin",
-                            "[ENDED] emit STATE_ENDED position=" +
-                            player.getCurrentPosition() +
-                            " duration=" +
-                            player.getDuration()
+                            TAG,
+                            "[ENDED] currentIndex=" +
+                            currentIndex +
+                            " repeatMode=" +
+                            repeatMode
                         );
 
-                        notifyListeners("playback:ended", new JSObject());
-                        
+                        if (repeatMode == 2) {
+
+                            playQueueIndex(currentIndex);
+
+                        } else if (repeatMode == 1) {
+
+                            playQueueIndex(
+                                getNextIndex()
+                            );
+
+                        } else {
+
+                            if (
+                                currentIndex ==
+                                queueSongs.length() - 1
+                            ) {
+
+                                player.pause();
+
+                            } else {
+
+                                playQueueIndex(
+                                    getNextIndex()
+                                );
+
+                            }
+                        }
                     }
                 }
 
@@ -192,6 +218,36 @@ public class MusicPlugin extends Plugin {
 
     call.resolve();
 
+    }
+
+    @PluginMethod
+    public void next(PluginCall call) {
+
+        Log.d(
+            TAG,
+            "[NEXT]"
+        );
+
+        playQueueIndex(
+            getNextIndex()
+        );
+
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void prev(PluginCall call) {
+
+        Log.d(
+            TAG,
+            "[PREV]"
+        );
+
+        playQueueIndex(
+            getPrevIndex()
+        );
+
+        call.resolve();
     }
 
     @PluginMethod
@@ -453,6 +509,88 @@ public class MusicPlugin extends Plugin {
             prevShuffleIndex,
             currentIndex
         );
+    }
+
+    private boolean loadQueueIndex(int index) {
+
+        if (
+            index < 0 ||
+            index >= queueSongs.length()
+        ) {
+            return false;
+        }
+
+        try {
+
+            JSONObject song =
+                queueSongs.getJSONObject(index);
+
+            String source =
+                song.getString("nativeFile");
+
+            if (
+                source == null ||
+                source.isEmpty()
+            ) {
+                source =
+                    song.getString("file");
+            }
+
+            if (
+                source == null ||
+                source.isEmpty()
+            ) {
+                return false;
+            }
+
+            currentIndex = index;
+            currentSource = source;
+
+            ExoPlayer player = getPlayer();
+
+            MediaItem mediaItem =
+                MediaItem.fromUri(currentSource);
+
+            player.setMediaItem(mediaItem);
+            player.prepare();
+
+            Log.d(
+                TAG,
+                "[QUEUE_LOAD] index=" +
+                index +
+                " source=" +
+                source
+            );
+
+            return true;
+
+        } catch (JSONException e) {
+
+            Log.e(
+                TAG,
+                "[QUEUE_LOAD] failed index=" +
+                index,
+                e
+            );
+
+            return false;
+        }
+    }
+
+    private boolean playQueueIndex(int index) {
+
+        if (!loadQueueIndex(index)) {
+            return false;
+        }
+
+        getPlayer().play();
+
+        Log.d(
+            TAG,
+            "[QUEUE_PLAY] index=" + index
+        );
+
+        return true;
     }
 
     @PermissionCallback
