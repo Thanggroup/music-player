@@ -109,6 +109,10 @@ export function createAudioService(backend) {
 
     syncState() {
       return backend.syncState();
+    },
+
+    setQueueState(snapshot) {
+      return backend.setQueueState(snapshot);
     }
 
   };

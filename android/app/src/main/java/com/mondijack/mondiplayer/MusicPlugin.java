@@ -27,6 +27,8 @@ import android.os.Looper;
 
 import android.util.Log;
 
+import org.json.JSONException;
+
 @CapacitorPlugin(
         name = "MusicPlugin",
     permissions = {
@@ -43,6 +45,16 @@ public class MusicPlugin extends Plugin {
     private double currentTime = 0;
     private double duration = 0;
     private double volume = 1;
+
+    private JSArray queueSongs = new JSArray();
+
+    private int currentIndex = 0;
+
+    private int repeatMode = 0;
+
+    private boolean shuffleMode = false;
+    private JSArray shuffleOrder = new JSArray();
+    private int shuffleIndex = 0;
 
     private ExoPlayer player;
 
@@ -345,6 +357,102 @@ public class MusicPlugin extends Plugin {
         );
 
         call.resolve(data);
+    }
+
+    @PluginMethod
+    public void setQueueState(PluginCall call) {
+
+        JSObject data = call.getData();
+
+        Log.d(
+            "MusicPlugin",
+            "[QUEUE_MIRROR] " + data.toString()
+        );
+
+        queueSongs =
+            call.getArray("songs", new JSArray());
+
+        currentIndex =
+            call.getInt("currentIndex", 0);
+
+        repeatMode =
+            call.getInt("repeatMode", 0);
+
+        shuffleMode =
+            call.getBoolean("shuffleMode", false);
+
+        shuffleOrder =
+            call.getArray("shuffleOrder", new JSArray());
+
+        shuffleIndex =
+            call.getInt("shuffleIndex", 0);
+
+        call.resolve();
+
+        Log.d(
+            TAG,
+            "[QUEUE_STATE] songs=" +
+            queueSongs.length() +
+            " currentIndex=" +
+            currentIndex +
+            " repeatMode=" +
+            repeatMode +
+            " shuffleMode=" +
+            shuffleMode +
+            " shuffleIndex=" +
+            shuffleIndex
+        );
+    }
+
+    private int getNextIndex() {
+
+        int songCount = queueSongs.length();
+
+        if (songCount == 0) {
+            return 0;
+        }
+
+        if (!shuffleMode) {
+            return (currentIndex + 1) % songCount;
+        }
+
+        int nextShuffleIndex = shuffleIndex + 1;
+
+        if (nextShuffleIndex >= shuffleOrder.length()) {
+            nextShuffleIndex = 0;
+        }
+
+        return shuffleOrder.optInt(
+            nextShuffleIndex,
+            currentIndex
+        );
+    }
+
+    private int getPrevIndex() {
+
+        int songCount = queueSongs.length();
+
+        if (songCount == 0) {
+            return 0;
+        }
+
+        if (!shuffleMode) {
+            return (
+                currentIndex - 1 + songCount
+            ) % songCount;
+        }
+
+        int prevShuffleIndex = shuffleIndex - 1;
+
+        if (prevShuffleIndex < 0) {
+            prevShuffleIndex =
+                shuffleOrder.length() - 1;
+        }
+
+        return shuffleOrder.optInt(
+            prevShuffleIndex,
+            currentIndex
+        );
     }
 
     @PermissionCallback

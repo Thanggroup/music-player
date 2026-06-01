@@ -254,6 +254,12 @@ export function createAndroidAudioBackend() {
       console.log("[AndroidBackend] setVolume()", volume);
     },
 
+    async setQueueState(snapshot) {
+      console.log("[AndroidBackend] setQueueState()", snapshot);
+
+      await MusicPlugin.setQueueState(snapshot);
+    },
+
     isPaused() {
       return state.paused;
     },

@@ -77,6 +77,8 @@ export function createPlayerCore({
       attempts++;
     }
 
+    syncQueueMirror();
+
     loadVersion++;
 
     console.log(
@@ -225,6 +227,8 @@ export function createPlayerCore({
       repeatMode = 0;
     }
 
+    syncQueueMirror();
+
     saveState();
   }
 
@@ -237,6 +241,7 @@ export function createPlayerCore({
 
     playlist.toggleShuffle();
 
+    syncQueueMirror();
     saveState();
   }
 
@@ -261,6 +266,36 @@ export function createPlayerCore({
       }
 
       notifyChange();
+    }
+
+    function syncQueueMirror() {
+
+      const snapshot = {
+        songs: playlist.getSongs().map(song => ({
+          file: song.file,
+          nativeFile: song.nativeFile,
+          playable: song.playable !== false
+        })),
+
+        currentIndex: playlist.getCurrentIndex(),
+
+        repeatMode,
+
+        shuffleMode: playlist.getShuffleMode(),
+        shuffleOrder: playlist.getShuffleOrder(),
+        shuffleIndex: playlist.getShuffleIndex()
+      };
+
+      console.log(
+        `[QUEUE_MIRROR] songs=${snapshot.songs.length}` +
+        ` currentIndex=${snapshot.currentIndex}` +
+        ` repeat=${snapshot.repeatMode}` +
+        ` shuffle=${snapshot.shuffleMode}` +
+        ` shuffleIndex=${snapshot.shuffleIndex}`
+      );
+
+      audioService.setQueueState(snapshot);
+
     }
 
   return {
