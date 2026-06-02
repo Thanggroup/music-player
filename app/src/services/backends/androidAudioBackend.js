@@ -124,6 +124,23 @@ export function createAndroidAudioBackend() {
       }
     );
 
+    const queueChangeHandle = await MusicPlugin.addListener(
+      "playback:queuechange",
+      (data) => {
+
+        console.log(
+          "[AndroidBackend] QUEUE_CHANGE received",
+          data.currentIndex
+        );
+
+        state.currentIndex = data.currentIndex;
+
+        emit("queuechange", data);
+      }
+    );
+    
+    console.log("[AndroidBackend] queuechange listener attached");
+    nativeListenerHandles.push(queueChangeHandle);
     nativeListenerHandles.push(endedHandle);
     
   }
@@ -202,6 +219,20 @@ export function createAndroidAudioBackend() {
       console.log("[AndroidBackend] pause()");
 
       await MusicPlugin.pause();
+    },
+
+    async next() {
+
+      console.log("[AndroidBackend] next()");
+
+      await MusicPlugin.next();
+    },
+
+    async prev() {
+
+      console.log("[AndroidBackend] prev()");
+
+      await MusicPlugin.prev();
     },
 
     async load() {

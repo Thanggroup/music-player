@@ -107,19 +107,13 @@ export function createPlayerCore({
     }
   }
 
-  function nextSong() {
-    playlist.setCurrentIndex(
-      playlist.getNextIndex()
-    );
-    loadSong();
-  }
+function nextSong() {
+  audioService.next();
+}
 
-  function prevSong() {
-    playlist.setCurrentIndex(
-      playlist.getPrevIndex()
-    );
-    loadSong();
-  }
+function prevSong() {
+  audioService.prev();
+}
 
   function togglePlay() {
 
@@ -173,7 +167,23 @@ export function createPlayerCore({
   }
 
   function handleLoadedMetadata() {
-    if (audioService.getLoadVersion() !== loadVersion) return;
+    console.log(
+      "[PlayerCore] loadedmetadata",
+      {
+        audioLoadVersion: audioService.getLoadVersion(),
+        loadVersion,
+        activeLoadSongIndex
+      }
+    );
+
+    if (audioService.getLoadVersion() !== loadVersion) {
+
+      console.log(
+        "[PlayerCore] loadedmetadata rejected"
+      );
+
+      return;
+    }
 
     // ONLY cache sync — NO seeking
     playerState.duration = audioService.getDuration();
@@ -297,6 +307,15 @@ export function createPlayerCore({
       audioService.setQueueState(snapshot);
 
     }
+
+    audioService.on("queuechange", (data) => {
+
+      playlist.setCurrentIndex(data.currentIndex);
+
+      saveState();
+      notifyChange();
+
+    });
 
   return {
     loadSong,

@@ -88,39 +88,15 @@ public class MusicPlugin extends Plugin {
 
                         Log.d(
                             TAG,
-                            "[ENDED] currentIndex=" +
-                            currentIndex +
-                            " repeatMode=" +
-                            repeatMode
+                            "[ENDED] STATE_ENDED triggered currentIndex=" + currentIndex
                         );
 
-                        if (repeatMode == 2) {
+                        handleSongEnd();
 
-                            playQueueIndex(currentIndex);
+                        JSObject data = new JSObject();
+                        data.put("currentIndex", currentIndex);
 
-                        } else if (repeatMode == 1) {
-
-                            playQueueIndex(
-                                getNextIndex()
-                            );
-
-                        } else {
-
-                            if (
-                                currentIndex ==
-                                queueSongs.length() - 1
-                            ) {
-
-                                player.pause();
-
-                            } else {
-
-                                playQueueIndex(
-                                    getNextIndex()
-                                );
-
-                            }
-                        }
+                        notifyListeners("playback:queuechange", data);
                     }
                 }
 
@@ -225,11 +201,18 @@ public class MusicPlugin extends Plugin {
 
         Log.d(
             TAG,
-            "[NEXT]"
+            "[NEXT] currentIndex BEFORE emit = " + currentIndex
         );
 
         playQueueIndex(
             getNextIndex()
+        );
+        JSObject data = new JSObject();
+        data.put("currentIndex", currentIndex);
+
+        notifyListeners(
+            "playback:queuechange",
+            data
         );
 
         call.resolve();
@@ -240,11 +223,18 @@ public class MusicPlugin extends Plugin {
 
         Log.d(
             TAG,
-            "[PREV]"
+            "[PREV] currentIndex BEFORE emit = " + currentIndex
         );
 
         playQueueIndex(
             getPrevIndex()
+        );
+        JSObject data = new JSObject();
+        data.put("currentIndex", currentIndex);
+
+        notifyListeners(
+            "playback:queuechange",
+            data
         );
 
         call.resolve();
@@ -577,20 +567,71 @@ public class MusicPlugin extends Plugin {
         }
     }
 
-    private boolean playQueueIndex(int index) {
+    private void playQueueIndex(int index) {
 
-        if (!loadQueueIndex(index)) {
-            return false;
+        if (queueSongs == null || queueSongs.length() == 0) return;
+
+        if (index < 0 || index >= queueSongs.length()) return;
+
+        try {
+            JSONObject song = queueSongs.getJSONObject(index);
+
+            if (song == null) return;
+
+            String file = song.optString(
+                "nativeFile",
+                song.optString("file")
+            );
+
+            currentSource = file;
+
+            Log.d(
+                TAG,
+                "[PLAY_INDEX] index=" + index + " src=" + currentSource
+            );
+
+            MediaItem mediaItem = MediaItem.fromUri(currentSource);
+
+            ExoPlayer p = getPlayer();
+
+            p.setMediaItem(mediaItem);
+            p.prepare();
+            p.play();
+
+            currentIndex = index;
+
+        } catch (Exception e) {
+
+            Log.e(TAG, "[PLAY_INDEX] error", e);
+        }
+    }
+
+    private void handleSongEnd() {
+
+        int songCount = queueSongs.length();
+
+        if (songCount == 0) return;
+
+        // REPEAT ONE
+        if (repeatMode == 2) {
+            playQueueIndex(currentIndex);
+            return;
         }
 
-        getPlayer().play();
+        // NEXT INDEX (native-owned)
+        int nextIndex = getNextIndex();
 
-        Log.d(
-            TAG,
-            "[QUEUE_PLAY] index=" + index
-        );
+        // REPEAT ALL or normal progression
+        if (repeatMode == 1 || nextIndex != 0 || currentIndex < songCount - 1) {
+            currentIndex = nextIndex;
+            playQueueIndex(currentIndex);
+            return;
+        }
 
-        return true;
+        // STOP
+        Log.d(TAG, "[ENDED] stop at end of queue");
+
+        player.pause();
     }
 
     @PermissionCallback
