@@ -312,6 +312,8 @@ function prevSong() {
 
       playlist.setCurrentIndex(data.currentIndex);
 
+      playerState.currentTime = 0;
+
       saveState();
       notifyChange();
 

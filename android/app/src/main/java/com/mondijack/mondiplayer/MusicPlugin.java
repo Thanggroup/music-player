@@ -462,14 +462,14 @@ public class MusicPlugin extends Plugin {
             return (currentIndex + 1) % songCount;
         }
 
-        int nextShuffleIndex = shuffleIndex + 1;
+        shuffleIndex++;
 
-        if (nextShuffleIndex >= shuffleOrder.length()) {
-            nextShuffleIndex = 0;
+        if (shuffleIndex >= shuffleOrder.length()) {
+            shuffleIndex = 0;
         }
 
         return shuffleOrder.optInt(
-            nextShuffleIndex,
+            shuffleIndex,
             currentIndex
         );
     }
@@ -488,15 +488,15 @@ public class MusicPlugin extends Plugin {
             ) % songCount;
         }
 
-        int prevShuffleIndex = shuffleIndex - 1;
+        shuffleIndex--;
 
-        if (prevShuffleIndex < 0) {
-            prevShuffleIndex =
+        if (shuffleIndex < 0) {
+            shuffleIndex =
                 shuffleOrder.length() - 1;
         }
 
         return shuffleOrder.optInt(
-            prevShuffleIndex,
+            shuffleIndex,
             currentIndex
         );
     }
@@ -597,6 +597,8 @@ public class MusicPlugin extends Plugin {
             p.setMediaItem(mediaItem);
             p.prepare();
             p.play();
+
+            startProgressUpdates();
 
             currentIndex = index;
 

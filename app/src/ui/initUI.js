@@ -161,6 +161,11 @@ export function initUI({
     isProgrammaticUpdate = false;
 
     core.handleTimeUpdate();
+
+    console.log(
+      "[UI] handleTimeUpdate",
+      audioService.getCurrentTime()
+    );
   }
 
   function syncUI() {

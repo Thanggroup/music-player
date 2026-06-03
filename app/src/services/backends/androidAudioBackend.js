@@ -107,6 +107,10 @@ export function createAndroidAudioBackend() {
         }
 
         emit("timeupdate");
+        console.log(
+            "[AndroidBackend] TIMEUPDATE",
+            state.currentTime
+          );
       }
     );
 
@@ -197,7 +201,10 @@ export function createAndroidAudioBackend() {
     emit("loadedmetadata");
 
     emit("timeupdate");
-
+    console.log(
+      "[AndroidBackend] TIMEUPDATE",
+      state.currentTime
+    );
     emit(
       state.paused
         ? "pause"
