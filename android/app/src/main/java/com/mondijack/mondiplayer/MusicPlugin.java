@@ -22,6 +22,9 @@ import androidx.media3.common.MediaItem;
 import androidx.media3.common.Player;
 import androidx.media3.exoplayer.ExoPlayer;
 
+import androidx.media3.session.MediaSession;
+import androidx.media3.common.MediaMetadata;
+
 import android.os.Handler;
 import android.os.Looper;
 
@@ -59,6 +62,8 @@ public class MusicPlugin extends Plugin {
 
     private ExoPlayer player;
 
+    private MediaSession mediaSession;
+
     private Handler progressHandler;
     private Runnable progressRunnable;
 
@@ -67,6 +72,14 @@ public class MusicPlugin extends Plugin {
         if (player == null) {
 
             player = new ExoPlayer.Builder(getContext()).build();
+
+            if (mediaSession == null) {
+                mediaSession =
+                    new MediaSession.Builder(
+                        getContext(),
+                        player
+                    ).build();
+            }
 
             player.addListener(new Player.Listener() {
 
@@ -590,7 +603,22 @@ public class MusicPlugin extends Plugin {
                 "[PLAY_INDEX] index=" + index + " src=" + currentSource
             );
 
-            MediaItem mediaItem = MediaItem.fromUri(currentSource);
+            String title = song.optString("title", "");
+            String artist = song.optString("artist", "");
+            String album = song.optString("album", "");
+
+            MediaMetadata metadata =
+                new MediaMetadata.Builder()
+                    .setTitle(title)
+                    .setArtist(artist)
+                    .setAlbumTitle(album)
+                    .build();
+
+            MediaItem mediaItem =
+                new MediaItem.Builder()
+                    .setUri(currentSource)
+                    .setMediaMetadata(metadata)
+                    .build();
 
             ExoPlayer p = getPlayer();
 

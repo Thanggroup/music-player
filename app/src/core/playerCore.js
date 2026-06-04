@@ -126,46 +126,6 @@ function prevSong() {
     saveState();
   }
 
-  function processSongEnd(endedLoadVersion) {
-
-    console.log(
-      `[PlayerCore] processSongEnd endedLoadVersion=${endedLoadVersion} currentLoadVersion=${loadVersion} repeatMode=${repeatMode} currentIndex=${playlist.getCurrentIndex()}`
-    );
-
-    if (endedLoadVersion !== loadVersion) {
-
-      console.log(
-        "[PlayerCore] stale ended ignored",
-        {
-          endedLoadVersion,
-          currentLoadVersion: loadVersion,
-        }
-      );
-
-      return;
-    }
-
-    if (repeatMode === 2) {
-      isRepeating = true;
-      loadSong();
-      return;
-    }
-
-    if (repeatMode === 1) {
-      nextSong();
-      return;
-    }
-
-    if (
-      playlist.getCurrentIndex() ===
-      playlist.getSongs().length - 1
-    ) {
-      audioService.pause();
-    } else {
-      nextSong();
-    }
-  }
-
   function handleLoadedMetadata() {
     console.log(
       "[PlayerCore] loadedmetadata",
@@ -324,7 +284,6 @@ function prevSong() {
     nextSong,
     prevSong,
     togglePlay,
-    processSongEnd,
     handleLoadedMetadata,
     handleTimeUpdate,
     handleSeek,

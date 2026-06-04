@@ -248,19 +248,6 @@ export function initUI({
   audioService.on("loadedmetadata", handleLoadedMetadata);
   audioService.on("timeupdate", handleTimeUpdate);
 
-  audioService.on("ended", () => {
-    const endedLoadVersion =
-    audioService.getLoadVersion();
-
-    console.log(
-      `[UI] ended event endedLoadVersion=${endedLoadVersion} currentCoreLoadVersion=${core.getLoadVersion?.()}`
-    );
-
-    core.processSongEnd(endedLoadVersion);
-
-    syncUI();
-  });
-
   document.addEventListener("keydown", handleKeydown);
 
   // Initial UI State

@@ -29,41 +29,6 @@ export function createPlaylistManager() {
 
   }
 
-  function getNextIndex() {
-
-    if (!shuffleMode) {
-      return (currentSong + 1) % songs.length;
-    }
-
-    shuffleIndex++;
-
-    if (shuffleIndex >= shuffleOrder.length) {
-
-      createShuffle();
-      shuffleIndex = 0;
-
-    }
-
-    return shuffleOrder[shuffleIndex];
-
-  }
-
-  function getPrevIndex() {
-
-    if (!shuffleMode) {
-      return (currentSong - 1 + songs.length) % songs.length;
-    }
-
-    shuffleIndex--;
-
-    if (shuffleIndex < 0) {
-      shuffleIndex = shuffleOrder.length - 1;
-    }
-
-    return shuffleOrder[shuffleIndex];
-
-  }
-
   function setSongs(newSongs) {
     songs = newSongs;
   }
@@ -95,9 +60,6 @@ export function createPlaylistManager() {
 
     setSongs,
     setCurrentIndex,
-
-    getNextIndex,
-    getPrevIndex,
 
     getShuffleMode: () => shuffleMode,
     toggleShuffle,
