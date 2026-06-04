@@ -79,7 +79,13 @@ public class MusicPlugin extends Plugin {
                         getContext(),
                         player
                     ).build();
+                Log.d(TAG, "[MEDIA_SESSION] created");
+                Log.d(
+                    TAG,
+                    "[MEDIA_SESSION] session=" + mediaSession
+                );
             }
+            // listener registration...
 
             player.addListener(new Player.Listener() {
 
@@ -123,6 +129,11 @@ public class MusicPlugin extends Plugin {
                         "MusicPlugin",
                         "[PLAY_STATE] isPlaying=" + isPlaying +
                         " position=" + player.getCurrentPosition()
+                    );
+
+                    Log.d(
+                        TAG,
+                        "[MEDIA_SESSION] onIsPlayingChanged=" + isPlaying
                     );
 
                     notifyListeners(
@@ -625,6 +636,11 @@ public class MusicPlugin extends Plugin {
             p.setMediaItem(mediaItem);
             p.prepare();
             p.play();
+
+            Log.d(
+                TAG,
+                "[MEDIA_SESSION] playerIsPlaying=" + p.isPlaying()
+            );
 
             startProgressUpdates();
 
