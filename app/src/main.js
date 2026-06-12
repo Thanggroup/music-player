@@ -23,7 +23,11 @@ const backend = isAndroid
   : createHtmlAudioBackend(player);
 
 if (isAndroid) {
+  console.log("[APP_START] main.js boot");
+
   backend.attachNativeListeners();
+
+  console.log("[APP_START] attachNativeListeners called");
 }
 
 const audioService = createAudioService(backend);

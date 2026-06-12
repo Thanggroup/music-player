@@ -71,7 +71,27 @@ public class MusicPlugin extends Plugin {
 
         if (player == null) {
 
+            Log.d(
+                "INVESTIGATION",
+                "Creating player. plugin=" +
+                System.identityHashCode(this)
+            );
+
             player = new ExoPlayer.Builder(getContext()).build();
+
+            Log.d(
+                "THREAD_CHECK",
+                "create thread=" +
+                Thread.currentThread().getName()
+            );
+
+            Log.d(
+                "THREAD_CHECK",
+                "playerLooperThread=" +
+                player.getApplicationLooper()
+                    .getThread()
+                    .getName()
+            );
 
             if (mediaSession == null) {
                 mediaSession =
@@ -193,6 +213,18 @@ public class MusicPlugin extends Plugin {
     @PluginMethod
     public void play(PluginCall call) {
 
+    Log.d(
+        "INVESTIGATION",
+        "play() plugin=" +
+        System.identityHashCode(this)
+    );
+
+    Log.d(
+        "THREAD_CHECK",
+        "play thread=" +
+        Thread.currentThread().getName()
+    );
+
     android.util.Log.d(TAG, "play()");
 
     ExoPlayer player = getPlayer();
@@ -207,6 +239,18 @@ public class MusicPlugin extends Plugin {
 
     @PluginMethod
     public void pause(PluginCall call) {
+
+    Log.d(
+        "INVESTIGATION",
+        "pause() plugin=" +
+        System.identityHashCode(this)
+    );
+
+    Log.d(
+        "THREAD_CHECK",
+        "pause thread=" +
+        Thread.currentThread().getName()
+    );
 
     android.util.Log.d(TAG, "pause()");
 
